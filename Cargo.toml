@@ -1,0 +1,12 @@
+[package]
+name = "iana-time-zone"
+description = "get the IANA time zone for the current system"
+version = "0.1.0"
+authors = ["Andrew Straw <strawman@astraw.com>"]
+edition = "2018"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.5"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winrt = "0.7"
