@@ -4,6 +4,11 @@ description = "get the IANA time zone for the current system"
 version = "0.1.0"
 authors = ["Andrew Straw <strawman@astraw.com>"]
 edition = "2018"
+repository = "https://github.com/strawlab/iana-time-zone"
+license = "MIT OR Apache-2.0"
+keywords = ["IANA", "time"]
+categories = ["date-and-time", "internationalization", "os"]
+readme = "README.md"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 core-foundation = "0.5"

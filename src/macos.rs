@@ -1,4 +1,4 @@
-pub fn get_timezone() -> Result<String,GetTimezoneError> {
+pub(crate) fn get_timezone_inner() -> Result<String,crate::GetTimezoneError> {
     let tz = core_foundation::timezone::CFTimeZone::system();
 
     // Get string like ""Europe/Berlin (GMT+2) offset 7200 (Daylight)""
@@ -11,6 +11,6 @@ pub fn get_timezone() -> Result<String,GetTimezoneError> {
 
     match str1.split_whitespace().next() {
         Some(s) => Ok(s.to_string()),
-        None => Err(GetTimezoneError::FailedParsingString),
+        None => Err(crate::GetTimezoneError::FailedParsingString),
     }
 }

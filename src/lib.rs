@@ -1,5 +1,8 @@
 //! get the IANA time zone for the current system
 //!
+//! This small utility crate provides the
+//! [`get_timezone()`](fn.get_timezone.html) function.
+//!
 //! ```
 //! extern crate iana_time_zone;
 //! println!("current: {}", iana_time_zone::get_timezone().unwrap());
@@ -10,17 +13,17 @@
 #[cfg(target_os = "linux")]
 mod linux;
 #[cfg(target_os = "linux")]
-pub use linux::get_timezone as get_timezone;
+use linux as platform;
 
 #[cfg(target_os = "windows")]
 mod windows;
 #[cfg(target_os = "windows")]
-pub use windows::get_timezone as get_timezone;
+use windows as platform;
 
 #[cfg(target_os = "macos")]
 mod macos;
 #[cfg(target_os = "macos")]
-pub use macos::get_timezone as get_timezone;
+use macos as platform;
 
 /// Error types
 #[derive(Debug)]
@@ -29,9 +32,8 @@ pub enum GetTimezoneError {
     FailedParsingString,
     /// Wrapped IO error
     IoError(std::io::Error),
-    #[cfg(target_os = "windows")]
-    /// Windows Runtime Error (`windows` target OS only)
-    WinRtError(winrt::Error),
+    /// Platform-specific error from the operating system
+    OsError,
 }
 
 impl std::error::Error for GetTimezoneError {}
@@ -43,8 +45,7 @@ impl std::fmt::Display for GetTimezoneError {
         let descr = match self {
             &FailedParsingString => "GetTimezoneError::FailedParsingString",
             &IoError(_) => "GetTimezoneError::IoError(_)",
-            #[cfg(target_os = "windows")]
-            &WinRtError(_) => "WinRtError(_)",
+            &OsError => "OsError",
         };
 
         write!(f, "{}", descr)
@@ -55,6 +56,11 @@ impl std::convert::From<std::io::Error> for GetTimezoneError {
     fn from(orig: std::io::Error) -> Self {
         GetTimezoneError::IoError(orig)
     }
+}
+
+/// Get the IANA time zone as a string.
+pub fn get_timezone() -> std::result::Result<String,crate::GetTimezoneError> {
+    platform::get_timezone_inner()
 }
 
 #[cfg(test)]

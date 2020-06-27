@@ -8,12 +8,12 @@ import!(
 );
 
 impl std::convert::From<winrt::Error> for crate::GetTimezoneError {
-    fn from(orig: winrt::Error) -> Self {
-        crate::GetTimezoneError::WinRtError(orig)
+    fn from(_orig: winrt::Error) -> Self {
+        crate::GetTimezoneError::OsError
     }
 }
 
-pub fn get_timezone() -> std::result::Result<String,crate::GetTimezoneError> {
+pub(crate) fn get_timezone_inner() -> std::result::Result<String,crate::GetTimezoneError> {
     use windows::globalization::Calendar;
 
     let cal = Calendar::new()?;
