@@ -8,8 +8,6 @@
 //! println!("current: {}", iana_time_zone::get_timezone().unwrap());
 //! ```
 
-#[deny(rust_2018_idioms)]
-
 #[cfg(target_os = "linux")]
 mod linux;
 #[cfg(target_os = "linux")]
