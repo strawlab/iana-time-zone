@@ -38,7 +38,6 @@ impl std::error::Error for GetTimezoneError {}
 
 impl std::fmt::Display for GetTimezoneError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-
         use GetTimezoneError::*;
         let descr = match self {
             &FailedParsingString => "GetTimezoneError::FailedParsingString",
@@ -57,7 +56,7 @@ impl std::convert::From<std::io::Error> for GetTimezoneError {
 }
 
 /// Get the IANA time zone as a string.
-pub fn get_timezone() -> std::result::Result<String,crate::GetTimezoneError> {
+pub fn get_timezone() -> std::result::Result<String, crate::GetTimezoneError> {
     platform::get_timezone_inner()
 }
 

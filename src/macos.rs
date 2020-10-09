@@ -1,4 +1,4 @@
-pub(crate) fn get_timezone_inner() -> Result<String,crate::GetTimezoneError> {
+pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     let tz = core_foundation::timezone::CFTimeZone::system();
 
     // Get string like ""Europe/Berlin (GMT+2) offset 7200 (Daylight)""

@@ -13,7 +13,7 @@ impl std::convert::From<winrt::Error> for crate::GetTimezoneError {
     }
 }
 
-pub(crate) fn get_timezone_inner() -> std::result::Result<String,crate::GetTimezoneError> {
+pub(crate) fn get_timezone_inner() -> std::result::Result<String, crate::GetTimezoneError> {
     use windows::globalization::Calendar;
 
     let cal = Calendar::new()?;

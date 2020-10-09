@@ -1,4 +1,4 @@
-pub(crate) fn get_timezone_inner() -> Result<String,crate::GetTimezoneError> {
+pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     // see https://stackoverflow.com/a/12523283
     use std::io::Read;
 
