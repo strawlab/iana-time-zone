@@ -40,9 +40,9 @@ impl std::fmt::Display for GetTimezoneError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         use GetTimezoneError::*;
         let descr = match self {
-            &FailedParsingString => "GetTimezoneError::FailedParsingString",
-            &IoError(_) => "GetTimezoneError::IoError(_)",
-            &OsError => "OsError",
+            FailedParsingString => "GetTimezoneError::FailedParsingString",
+            IoError(_) => "GetTimezoneError::IoError(_)",
+            OsError => "OsError",
         };
 
         write!(f, "{}", descr)
