@@ -9,19 +9,19 @@
 //! ```
 
 #[cfg(target_os = "linux")]
-mod linux;
+mod tz_linux;
 #[cfg(target_os = "linux")]
-use linux as platform;
+use tz_linux as platform;
 
 #[cfg(target_os = "windows")]
-mod windows;
+mod tz_windows;
 #[cfg(target_os = "windows")]
-use windows as platform;
+use tz_windows as platform;
 
 #[cfg(target_os = "macos")]
-mod macos;
+mod tz_macos;
 #[cfg(target_os = "macos")]
-use macos as platform;
+use tz_macos as platform;
 
 /// Error types
 #[derive(Debug)]
