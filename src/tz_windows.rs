@@ -2,9 +2,7 @@ mod bindings {
     ::windows::include_bindings!();
 }
 
-use bindings::{
-    windows::globalization::Calendar,
-};
+use bindings::Windows::Globalization::Calendar;
 
 impl std::convert::From<windows::Error> for crate::GetTimezoneError {
     fn from(_orig: windows::Error) -> Self {
@@ -14,6 +12,6 @@ impl std::convert::From<windows::Error> for crate::GetTimezoneError {
 
 pub(crate) fn get_timezone_inner() -> std::result::Result<String, crate::GetTimezoneError> {
     let cal = Calendar::new()?;
-    let tz_hstring = cal.get_time_zone()?;
+    let tz_hstring = cal.GetTimeZone()?;
     Ok(tz_hstring.to_string())
 }
