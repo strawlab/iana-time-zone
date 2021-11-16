@@ -1,7 +1,7 @@
 use windows::Globalization::Calendar;
 
-impl std::convert::From<windows::runtime::Error> for crate::GetTimezoneError {
-    fn from(_orig: windows::runtime::Error) -> Self {
+impl std::convert::From<windows::core::Error> for crate::GetTimezoneError {
+    fn from(_orig: windows::core::Error) -> Self {
         crate::GetTimezoneError::OsError
     }
 }
