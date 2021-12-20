@@ -18,7 +18,7 @@ anyhow = "1.0"
 core-foundation = "0.9"
 
 [target.'cfg(target_os = "windows")'.dependencies]
-windows = {version="0.28", features = ["Globalization"]}
+windows = {version="0.29", features = ["Globalization"]}
 
 [target.'cfg(target_os = "windows")'.build-dependencies]
-windows = "0.28"
+windows = "0.29"
