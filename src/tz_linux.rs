@@ -4,7 +4,8 @@ pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
 
     let fname = "/etc/timezone";
     let mut f = std::fs::File::open(&fname)?;
-    let mut contents = String::new();
+    let mut contents = String::with_capacity(32);
     f.read_to_string(&mut contents)?;
-    Ok(contents.trim().to_string())
+    contents.truncate(contents.trim_end().len());
+    Ok(contents)
 }
