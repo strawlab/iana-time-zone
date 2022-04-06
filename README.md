@@ -21,3 +21,9 @@ You can test this is working on your platform with:
 ```
 cargo test -- --nocapture
 ```
+
+## Minimum supported rust version policy
+
+This crate has a minimum supported rust version (MSRV) of 1.59. Updates to the
+MSRV are sometimes necessary due to the MSRV of dependencies. MSRV updates will
+not be indicated as a breaking change to the semver version.

@@ -3,12 +3,13 @@ name = "iana-time-zone"
 description = "get the IANA time zone for the current system"
 version = "0.1.31"
 authors = ["Andrew Straw <strawman@astraw.com>"]
-edition = "2018"
 repository = "https://github.com/strawlab/iana-time-zone"
 license = "MIT OR Apache-2.0"
 keywords = ["IANA", "time"]
 categories = ["date-and-time", "internationalization", "os"]
 readme = "README.md"
+edition = "2021"
+rust-version = "1.59"
 
 [dev-dependencies]
 chrono-tz = "0.6"
