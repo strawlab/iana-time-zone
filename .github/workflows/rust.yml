@@ -7,14 +7,115 @@ on:
     branches: [ '**' ]
 
 jobs:
-  build-and-test:
+  test:
     strategy:
       matrix:
         runs-on: [ubuntu-20.04, windows-2019, macos-10.15]
+        toolchain: ["1.59", stable, nightly]
     runs-on: ${{ matrix.runs-on }}
+    name: "Test (${{ matrix.runs-on }}/${{ matrix.toolchain }})"
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build
-    - name: Run tests
-      run: cargo test -- --nocapture
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-test-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+      - run: cargo test --workspace --all-targets
+      - run: cargo run --example stress-test
+
+  check:
+    strategy:
+      matrix:
+        toolchain: ["1.59", stable, nightly]
+    name: "Check (${{ matrix.toolchain }})"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: clippy
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-check-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+      - run: cargo check --workspace --all-targets
+      - run: cargo clippy --all-targets -- -D warnings
+
+  doc:
+    name: "Documentation"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-doc-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+      - run: cargo doc --workspace --all-features
+
+# audit:
+#   name: "Cargo audit"
+#   runs-on: ubuntu-latest
+#   steps:
+#     - name: Checkout
+#       uses: actions/checkout@v3
+#     - name: Cache
+#       uses: actions/cache@v3
+#       with:
+#         key: ${{ runner.os }}-audit-${{ hashFiles('Cargo.lock') }}
+#         restore-keys: |
+#           ${{ runner.os }}-audit-
+#         path: |
+#           ~/.cargo/registry/index/
+#           ~/.cargo/registry/cache/
+#           ~/.cargo/git/db/
+#           target/
+#     - name: Audit
+#       uses: actions-rs/audit-check@v1
+#       with:
+#         token: ${{ secrets.GITHUB_TOKEN }}
