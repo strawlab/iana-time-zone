@@ -5,13 +5,15 @@ on:
     branches: [ '**' ]
   pull_request:
     branches: [ '**' ]
+  schedule:
+    - cron: "25 23 * * 4"
 
 jobs:
   test:
     strategy:
       matrix:
         runs-on: [ubuntu-20.04, windows-2019, macos-10.15]
-        toolchain: ["1.59", stable, nightly]
+        toolchain: ["1.38", stable, nightly]
     runs-on: ${{ matrix.runs-on }}
     name: "Test (${{ matrix.runs-on }}/${{ matrix.toolchain }})"
     steps:
@@ -36,13 +38,13 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-      - run: cargo test --workspace --all-targets
+      - run: cargo test --all-targets
       - run: cargo run --example stress-test
 
   check:
     strategy:
       matrix:
-        toolchain: ["1.59", stable, nightly]
+        toolchain: ["1.38", stable, nightly]
     name: "Check (${{ matrix.toolchain }})"
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +70,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-      - run: cargo check --workspace --all-targets
+      - run: cargo check --all-targets
       - run: cargo clippy --all-targets -- -D warnings
 
   doc:
@@ -96,26 +98,26 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-      - run: cargo doc --workspace --all-features
+      - run: cargo doc --all-features
 
-# audit:
-#   name: "Cargo audit"
-#   runs-on: ubuntu-latest
-#   steps:
-#     - name: Checkout
-#       uses: actions/checkout@v3
-#     - name: Cache
-#       uses: actions/cache@v3
-#       with:
-#         key: ${{ runner.os }}-audit-${{ hashFiles('Cargo.lock') }}
-#         restore-keys: |
-#           ${{ runner.os }}-audit-
-#         path: |
-#           ~/.cargo/registry/index/
-#           ~/.cargo/registry/cache/
-#           ~/.cargo/git/db/
-#           target/
-#     - name: Audit
-#       uses: actions-rs/audit-check@v1
-#       with:
-#         token: ${{ secrets.GITHUB_TOKEN }}
+  audit:
+    name: "Cargo audit"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-audit-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-audit-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+      - name: Audit
+        uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
