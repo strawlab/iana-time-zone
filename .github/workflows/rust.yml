@@ -37,6 +37,7 @@ jobs:
             ~/.cargo/git/db/
             target/
       - run: cargo test --workspace --all-targets
+      - run: cargo run --example get_timezone
       - run: cargo run --example stress-test
 
   check:
