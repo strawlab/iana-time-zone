@@ -4,16 +4,18 @@
 //! [`get_timezone()`](fn.get_timezone.html) function.
 //!
 //! ```rust
-//! # fn main() -> Result<(),anyhow::Error> {
 //! // Get the current time zone as a string.
 //! let tz_str = iana_time_zone::get_timezone()?;
 //! println!("The current time zone is: {}", tz_str);
+//! # Ok::<(), iana_time_zone::GetTimezoneError>(())
+//! ```
 //!
-//! // Convert the time zone string to a `chrono-tz::Tz` variant.
-//! let tz: chrono_tz::Tz = tz_str.parse().map_err(|e| anyhow::anyhow!("Error: {}", e))?;
-//! println!("The current time zone is: {}", tz);
-//! # Ok(())
-//! # }
+//! The resulting string can be parsed to a
+//! [`chrono-tz::Tz`](https://docs.rs/chrono-tz/latest/chrono_tz/enum.Tz.html)
+//! variant like this:
+//! ```ignore
+//! let tz_str = iana_time_zone::get_timezone()?;
+//! let tz: chrono_tz::Tz = tz_str.parse()?;
 //! ```
 
 #[cfg(target_os = "linux")]
