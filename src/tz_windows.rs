@@ -50,8 +50,8 @@ unsafe fn get_timezone() -> Result<String, HRESULT> {
     // This function crates a Windows.Globalization.Calendar, gets its ITimeZoneOnCalendar, and
     // then the name of the timezone.
 
-    // We memorize the calendar constructor instead of an instance, because the use could have
-    // changed their timezone during the execution of the program. Caching the constructor makes
+    // We memorize the calendar constructor instead of an instance, because the user could
+    // change their timezone during the execution of the program. Caching the constructor makes
     // the stress-test example run about 3% faster.
 
     INITALIZED.call_once(|| initialize_factory());
