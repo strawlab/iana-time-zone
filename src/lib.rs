@@ -38,6 +38,16 @@ mod tz_wasm32;
 #[cfg(target_arch = "wasm32")]
 use tz_wasm32 as platform;
 
+#[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
+mod tz_freebsd;
+#[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
+use tz_freebsd as platform;
+
+#[cfg(any(target_os = "netbsd", target_os = "openbsd"))]
+mod tz_netbsd;
+#[cfg(any(target_os = "netbsd", target_os = "openbsd"))]
+use tz_netbsd as platform;
+
 /// Error types
 #[derive(Debug)]
 pub enum GetTimezoneError {
