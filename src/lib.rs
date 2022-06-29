@@ -33,6 +33,11 @@ mod tz_macos;
 #[cfg(target_os = "macos")]
 use tz_macos as platform;
 
+#[cfg(target_arch = "wasm32")]
+mod tz_wasm32;
+#[cfg(target_arch = "wasm32")]
+use tz_wasm32 as platform;
+
 /// Error types
 #[derive(Debug)]
 pub enum GetTimezoneError {

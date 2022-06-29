@@ -42,6 +42,40 @@ jobs:
       - run: cargo test --all-targets
       - run: cargo run --example stress-test
 
+  test-wasm:
+    runs-on: ubuntu-latest
+    name: "Test WebAssembly"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: wasm32-unknown-unknown
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-wasm-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/.cargo/bin/
+            target/
+      - run: which wasm-pack || cargo install wasm-pack
+      - run: wasm-pack test --node
+
   check:
     strategy:
       matrix:
@@ -56,7 +90,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
           components: clippy
       - name: Cache
