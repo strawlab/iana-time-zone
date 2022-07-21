@@ -18,35 +18,22 @@
 //! let tz: chrono_tz::Tz = tz_str.parse()?;
 //! ```
 
-#[cfg(target_os = "linux")]
-mod tz_linux;
-#[cfg(target_os = "linux")]
-use tz_linux as platform;
-
-#[cfg(target_os = "windows")]
-mod tz_windows;
-#[cfg(target_os = "windows")]
-use tz_windows as platform;
-
-#[cfg(target_os = "macos")]
-mod tz_macos;
-#[cfg(target_os = "macos")]
-use tz_macos as platform;
-
-#[cfg(target_arch = "wasm32")]
-mod tz_wasm32;
-#[cfg(target_arch = "wasm32")]
-use tz_wasm32 as platform;
-
-#[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
-mod tz_freebsd;
-#[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
-use tz_freebsd as platform;
-
-#[cfg(any(target_os = "netbsd", target_os = "openbsd"))]
-mod tz_netbsd;
-#[cfg(any(target_os = "netbsd", target_os = "openbsd"))]
-use tz_netbsd as platform;
+#[cfg_attr(target_os = "linux", path = "tz_linux.rs")]
+#[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
+#[cfg_attr(target_os = "macos", path = "tz_macos.rs")]
+#[cfg_attr(
+    all(target_arch = "wasm32", not(target_os = "wasi")),
+    path = "tz_wasm32.rs"
+)]
+#[cfg_attr(
+    any(target_os = "freebsd", target_os = "dragonfly"),
+    path = "tz_freebsd.rs"
+)]
+#[cfg_attr(
+    any(target_os = "netbsd", target_os = "openbsd"),
+    path = "tz_netbsd.rs"
+)]
+mod platform;
 
 /// Error types
 #[derive(Debug)]

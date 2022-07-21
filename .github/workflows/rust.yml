@@ -13,7 +13,7 @@ jobs:
   test:
     strategy:
       matrix:
-        runs-on: [ubuntu-20.04, windows-2019, macos-10.15]
+        runs-on: [ubuntu-20.04, windows-2022, macos-12]
         toolchain: ["1.38", stable, nightly]
     runs-on: ${{ matrix.runs-on }}
     name: "Test (${{ matrix.runs-on }}/${{ matrix.toolchain }})"
@@ -166,7 +166,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-      - run: cargo doc --all-features
+      - run: RUSTDOCFLAGS="-D warnings" cargo doc --all-features
 
   audit:
     name: "Cargo audit"
