@@ -7,7 +7,7 @@
 
 This small utility crate gets get the IANA time zone for the current system.
 This is also known the [tz database](https://en.wikipedia.org/wiki/Tz_database),
-tzdata, the zoneinfo database and, the Olson database.
+tzdata, the zoneinfo database, and the Olson database.
 
 Example:
 
