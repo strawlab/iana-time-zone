@@ -12,14 +12,15 @@ tzdata, the zoneinfo database, and the Olson database.
 Example:
 
 ```
-extern crate iana_time_zone;
-println!("current: {}", iana_time_zone::get_timezone().unwrap());
+// Get the current time zone as a string.
+let tz_str = iana_time_zone::get_timezone()?;
+println!("The current time zone is: {}", tz_str);
 ```
 
 You can test this is working on your platform with:
 
 ```
-cargo test -- --nocapture
+cargo run --example get_timezone
 ```
 
 ## Minimum supported rust version policy
