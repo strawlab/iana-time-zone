@@ -109,6 +109,39 @@ jobs:
       - run: which cross || cargo install cross
       - run: cross build --target ${{ matrix.target }} --examples
 
+  build-ios-cross:
+    strategy:
+      matrix:
+        target: [aarch64-apple-ios-sim, aarch64-apple-ios, x86_64-apple-ios]
+    runs-on: macos-12
+    name: "Build for ${{ matrix.target }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: ${{ matrix.target }}
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-${{ matrix.target }}-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/.cargo/bin/
+            target/
+      - run: which cross || cargo install cross
+      - run: cross build --target ${{ matrix.target }} --examples
+
   check:
     strategy:
       matrix:

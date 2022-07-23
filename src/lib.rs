@@ -20,7 +20,7 @@
 
 #[cfg_attr(target_os = "linux", path = "tz_linux.rs")]
 #[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
-#[cfg_attr(target_os = "macos", path = "tz_macos.rs")]
+#[cfg_attr(any(target_os = "macos", target_os = "ios"), path = "tz_macos.rs")]
 #[cfg_attr(
     all(target_arch = "wasm32", not(target_os = "wasi")),
     path = "tz_wasm32.rs"
