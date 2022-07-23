@@ -46,18 +46,23 @@ pub enum GetTimezoneError {
     OsError,
 }
 
-impl std::error::Error for GetTimezoneError {}
+impl std::error::Error for GetTimezoneError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            GetTimezoneError::FailedParsingString => None,
+            GetTimezoneError::IoError(err) => Some(err),
+            GetTimezoneError::OsError => None,
+        }
+    }
+}
 
 impl std::fmt::Display for GetTimezoneError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        use GetTimezoneError::*;
-        let descr = match self {
-            FailedParsingString => "GetTimezoneError::FailedParsingString",
-            IoError(_) => "GetTimezoneError::IoError(_)",
-            OsError => "OsError",
-        };
-
-        write!(f, "{}", descr)
+        f.write_str(match self {
+            Self::FailedParsingString => "GetTimezoneError::FailedParsingString",
+            Self::IoError(err) => return err.fmt(f),
+            Self::OsError => "OsError",
+        })
     }
 }
 
@@ -71,6 +76,7 @@ impl std::convert::From<std::io::Error> for GetTimezoneError {
 ///
 /// See the module-level documentatation for a usage example and more details
 /// about this function.
+#[inline]
 pub fn get_timezone() -> std::result::Result<String, crate::GetTimezoneError> {
     platform::get_timezone_inner()
 }
