@@ -1,6 +1,6 @@
-use iana_time_zone::{get_timezone, GetTimezoneError};
+use iana_time_zone::{GetTimezoneError, Timezone};
 
 fn main() -> Result<(), GetTimezoneError> {
-    println!("{}", get_timezone()?);
+    println!("{}", Timezone::system()?);
     Ok(())
 }

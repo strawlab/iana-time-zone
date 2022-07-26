@@ -18,8 +18,8 @@ pub struct Timezone {
 impl Timezone {
     /// TODO
     #[inline]
-    pub fn get() -> Result<Self, crate::GetTimezoneError> {
-        crate::get_timezone()
+    pub fn system() -> Result<Self, crate::GetTimezoneError> {
+        crate::platform::get_timezone_inner()
     }
 
     /// TODO

@@ -48,9 +48,10 @@ pub use crate::timezone::{CovertError, Timezone};
 ///
 /// See the module-level documentatation for a usage example and more details
 /// about this function.
-#[inline]
-pub fn get_timezone() -> Result<Timezone, GetTimezoneError> {
-    platform::get_timezone_inner()
+#[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
+pub fn get_timezone() -> Result<String, GetTimezoneError> {
+    Ok(crate::platform::get_timezone_inner()?.into())
 }
 
 /// TODO
@@ -60,13 +61,15 @@ pub enum GetTimezoneError {
     IoError(platform::Error),
     /// Failed to parse
     FailedParsingString,
+    /// (Unused)
+    OsError,
 }
 
 impl fmt::Display for GetTimezoneError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            GetTimezoneError::IoError(err) => write!(f, "platform-specific error: {:?}", err),
-            GetTimezoneError::FailedParsingString => f.write_str("no valid timezone found"),
+            Self::IoError(err) => write!(f, "platform-specific error: {:?}", err),
+            Self::FailedParsingString | Self::OsError => f.write_str("no valid timezone found"),
         }
     }
 }
@@ -88,6 +91,6 @@ mod tests {
 
     #[test]
     fn get_current() {
-        println!("current: {}", get_timezone().unwrap());
+        println!("current: {}", Timezone::system().unwrap());
     }
 }

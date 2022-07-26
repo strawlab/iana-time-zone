@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::thread::spawn;
 
-use iana_time_zone::{get_timezone, GetTimezoneError};
+use iana_time_zone::{GetTimezoneError, Timezone};
 
 const THREADS: usize = 10;
 const ITERATIONS: usize = 100_000;
@@ -13,7 +13,7 @@ fn main() -> Result<(), GetTimezoneError> {
     for _ in 0..THREADS {
         threads.push(spawn(|| {
             for _ in 0..ITERATIONS {
-                get_timezone()?;
+                let _ = Timezone::system()?;
                 COUNT.fetch_add(1, Ordering::Relaxed);
             }
             Result::<(), GetTimezoneError>::Ok(())
