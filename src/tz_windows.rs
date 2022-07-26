@@ -1,6 +1,7 @@
-use std::{io, mem, ptr, slice, sync};
+use core::{mem, ptr, slice};
 
 use interfaces::ITimeZoneOnCalendar;
+use once_cell::sync::OnceCell;
 use winapi::ctypes::wchar_t;
 use winapi::shared::winerror::{CO_E_NOTINITIALIZED, FAILED, HRESULT};
 use winapi::um::combaseapi::CoIncrementMTAUsage;
@@ -13,6 +14,10 @@ use winapi::winrt::winstring::{
     WindowsCreateStringReference, WindowsDeleteString, WindowsGetStringRawBuffer,
 };
 use winapi::Interface;
+
+use crate::{GetTimezoneError, Timezone};
+
+pub(crate) type Error = HRESULT;
 
 macro_rules! wstring {
     ($($letters:literal)* $(,)?) => {
@@ -27,8 +32,7 @@ const WINDOWS_GLOBALIZATION_CALENDAR: &[wchar_t] = &wstring!(
     0
 );
 
-static INITALIZED: sync::Once = sync::Once::new();
-static mut FACTORY: Result<Unknown<IActivationFactory>, HRESULT> = Err(0);
+static mut FACTORY: OnceCell<Result<Unknown<IActivationFactory>, HRESULT>> = OnceCell::new();
 
 #[repr(transparent)]
 struct HString(HSTRING);
@@ -36,34 +40,27 @@ struct HString(HSTRING);
 #[repr(transparent)]
 struct Unknown<T>(*mut T);
 
-impl std::convert::From<HRESULT> for crate::GetTimezoneError {
-    fn from(orig: HRESULT) -> Self {
-        io::Error::from_raw_os_error(orig).into()
-    }
+#[inline]
+pub(crate) fn get_timezone_inner() -> Result<Timezone, GetTimezoneError> {
+    unsafe { get_timezone() }
 }
 
-pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
-    unsafe { Ok(get_timezone()?) }
-}
-
-unsafe fn get_timezone() -> Result<String, HRESULT> {
+unsafe fn get_timezone() -> Result<Timezone, GetTimezoneError> {
     // This function crates a Windows.Globalization.Calendar, gets its ITimeZoneOnCalendar, and
     // then the name of the timezone.
 
     // We memorize the calendar constructor instead of an instance, because the user could
     // change their timezone during the execution of the program. Caching the constructor makes
     // the stress-test example run about 3% faster.
-
-    INITALIZED.call_once(|| initialize_factory());
-    let factory = match FACTORY {
-        Ok(ref factory) => factory,
-        Err(err) => return Err(err),
+    let factory = match FACTORY.get_or_init(|| initialize_factory()) {
+        Ok(factory) => factory,
+        Err(hr) => return Err(GetTimezoneError::IoError(*hr)),
     };
 
     let mut calendar: Unknown<IInspectable> = mem::zeroed();
     let hr = (*factory.0).ActivateInstance(mem::transmute(&mut calendar));
     if FAILED(hr) {
-        return Err(hr);
+        return Err(GetTimezoneError::IoError(hr));
     }
 
     let mut tz_on_caledar: Unknown<ITimeZoneOnCalendar> = mem::zeroed();
@@ -73,25 +70,23 @@ unsafe fn get_timezone() -> Result<String, HRESULT> {
     );
     drop(calendar);
     if FAILED(hr) {
-        return Err(hr);
+        return Err(GetTimezoneError::IoError(hr));
     }
 
     let mut timezone: HString = mem::zeroed();
     let hr = (*tz_on_caledar.0).GetTimeZone(mem::transmute(&mut timezone));
     drop(tz_on_caledar);
     if FAILED(hr) {
-        return Err(hr);
+        return Err(GetTimezoneError::IoError(hr));
     }
 
     let mut len = 0;
     let buf = WindowsGetStringRawBuffer(timezone.0, &mut len);
-    Ok(String::from_utf16_lossy(slice::from_raw_parts(
-        &*buf,
-        len as usize,
-    )))
+    let buf = slice::from_raw_parts::<wchar_t>(&*buf, len as usize);
+    Timezone::try_from_utf16(buf).ok_or(GetTimezoneError::FailedParsingString)
 }
 
-unsafe fn initialize_factory() {
+unsafe fn initialize_factory() -> Result<Unknown<IActivationFactory>, HRESULT> {
     // Some other liberary could have called CoIncrementMTAUsage() or CoInitializeEx(), so we only
     // call CoIncrementMTAUsage() if RoGetActivationFactory() tells us that multithreading was not
     // initialized, yet.
@@ -105,8 +100,7 @@ unsafe fn initialize_factory() {
         mem::transmute(&mut h_class_name),
     );
     if FAILED(hr) {
-        mem::swap(&mut FACTORY, &mut Err(hr));
-        return;
+        return Err(hr);
     }
 
     let mut factory: Unknown<IActivationFactory> = mem::zeroed();
@@ -116,11 +110,9 @@ unsafe fn initialize_factory() {
         mem::transmute(&mut factory),
     );
     if !FAILED(hr) {
-        mem::swap(&mut FACTORY, &mut Ok(factory));
-        return;
+        return Ok(factory);
     } else if hr != CO_E_NOTINITIALIZED {
-        mem::swap(&mut FACTORY, &mut Err(hr));
-        return;
+        return Err(hr);
     }
 
     // No need to check the error. The only conceivable error code this function returns is
@@ -136,8 +128,8 @@ unsafe fn initialize_factory() {
         mem::transmute(&mut factory),
     );
     match !FAILED(hr) {
-        true => mem::swap(&mut FACTORY, &mut Ok(factory)),
-        false => mem::swap(&mut FACTORY, &mut Err(hr)),
+        true => Ok(factory),
+        false => Err(hr),
     }
 }
 

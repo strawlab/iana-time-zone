@@ -18,6 +18,10 @@
 //! let tz: chrono_tz::Tz = tz_str.parse()?;
 //! ```
 
+#![cfg_attr(not(any(test, feature = "std")), no_std)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
+#![warn(missing_docs)]
+
 #[cfg_attr(target_os = "linux", path = "tz_linux.rs")]
 #[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
 #[cfg_attr(any(target_os = "macos", target_os = "ios"), path = "tz_macos.rs")]
@@ -34,52 +38,49 @@
     path = "tz_netbsd.rs"
 )]
 mod platform;
+mod timezone;
 
-/// Error types
-#[derive(Debug)]
-pub enum GetTimezoneError {
-    /// Failed to parse
-    FailedParsingString,
-    /// Wrapped IO error
-    IoError(std::io::Error),
-    /// Platform-specific error from the operating system
-    OsError,
-}
+use core::fmt;
 
-impl std::error::Error for GetTimezoneError {
-    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        match self {
-            GetTimezoneError::FailedParsingString => None,
-            GetTimezoneError::IoError(err) => Some(err),
-            GetTimezoneError::OsError => None,
-        }
-    }
-}
-
-impl std::fmt::Display for GetTimezoneError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        f.write_str(match self {
-            Self::FailedParsingString => "GetTimezoneError::FailedParsingString",
-            Self::IoError(err) => return err.fmt(f),
-            Self::OsError => "OsError",
-        })
-    }
-}
-
-impl std::convert::From<std::io::Error> for GetTimezoneError {
-    fn from(orig: std::io::Error) -> Self {
-        GetTimezoneError::IoError(orig)
-    }
-}
+pub use crate::timezone::{CovertError, Timezone};
 
 /// Get the current IANA time zone as a string.
 ///
 /// See the module-level documentatation for a usage example and more details
 /// about this function.
 #[inline]
-pub fn get_timezone() -> std::result::Result<String, crate::GetTimezoneError> {
+pub fn get_timezone() -> Result<Timezone, GetTimezoneError> {
     platform::get_timezone_inner()
 }
+
+/// TODO
+#[derive(Debug, Clone, Copy)]
+pub enum GetTimezoneError {
+    /// Platform-specific error from the operating system
+    IoError(platform::Error),
+    /// Failed to parse
+    FailedParsingString,
+}
+
+impl fmt::Display for GetTimezoneError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            GetTimezoneError::IoError(err) => write!(f, "platform-specific error: {:?}", err),
+            GetTimezoneError::FailedParsingString => f.write_str("no valid timezone found"),
+        }
+    }
+}
+
+impl From<platform::Error> for GetTimezoneError {
+    #[inline]
+    fn from(value: platform::Error) -> Self {
+        Self::IoError(value)
+    }
+}
+
+#[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
+impl std::error::Error for GetTimezoneError {}
 
 #[cfg(test)]
 mod tests {
