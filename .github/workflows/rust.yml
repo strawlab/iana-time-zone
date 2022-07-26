@@ -14,9 +14,8 @@ jobs:
     strategy:
       matrix:
         runs-on: [ubuntu-20.04, windows-2022, macos-12]
-        toolchain: ["1.38", stable, nightly]
+        toolchain: ["1.48", stable, nightly]
     runs-on: ${{ matrix.runs-on }}
-    name: "Test (${{ matrix.runs-on }}/${{ matrix.toolchain }})"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,12 +38,16 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-      - run: cargo test --all-targets
+      - run: cargo test --all-targets -- --show-output
+      - run: cargo test --all-targets --no-default-features -- --show-output
       - run: cargo run --example stress-test
+      - run: cargo run --example stress-test --no-default-features
 
-  test-wasm:
+  web-assembly:
     runs-on: ubuntu-latest
-    name: "Test WebAssembly"
+    strategy:
+      matrix:
+        toolchain: ["1.56", stable, nightly]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -53,7 +56,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: wasm32-unknown-unknown
       - name: Install Node
@@ -63,10 +66,10 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-wasm-${{ matrix.toolchain }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-wasm-
+            ${{ runner.os }}-wasm-${{ matrix.toolchain }}-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-wasm-${{ matrix.toolchain }}-
           path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
@@ -80,8 +83,8 @@ jobs:
     strategy:
       matrix:
         target: [x86_64-unknown-freebsd, x86_64-unknown-netbsd]
+        toolchain: [stable, nightly]
     runs-on: ubuntu-latest
-    name: "Build for ${{ matrix.target }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -90,16 +93,16 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: ${{ matrix.target }}
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-cross-${{ matrix.toolchain }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-${{ matrix.target }}-
+            ${{ runner.os }}-cross-${{ matrix.toolchain }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-cross-${{ matrix.toolchain }}-${{ matrix.target }}-
           path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
@@ -108,13 +111,14 @@ jobs:
             target/
       - run: which cross || cargo install cross
       - run: cross build --target ${{ matrix.target }} --examples
+      - run: cross build --target ${{ matrix.target }} --examples --no-default-features
 
   build-ios-cross:
     strategy:
       matrix:
         target: [aarch64-apple-ios-sim, aarch64-apple-ios, x86_64-apple-ios]
+        toolchain: [stable, nightly]
     runs-on: macos-12
-    name: "Build for ${{ matrix.target }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -123,16 +127,16 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: ${{ matrix.target }}
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-cross-${{ matrix.toolchain }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-${{ matrix.target }}-
+            ${{ runner.os }}-cross-${{ matrix.toolchain }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
+            ${{ runner.os }}-cross-${{ matrix.toolchain }}-${{ matrix.target }}-
           path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
@@ -141,12 +145,12 @@ jobs:
             target/
       - run: which cross || cargo install cross
       - run: cross build --target ${{ matrix.target }} --examples
+      - run: cross build --target ${{ matrix.target }} --examples --no-default-features
 
   check:
     strategy:
       matrix:
-        toolchain: ["1.38", stable, nightly]
-    name: "Check (${{ matrix.toolchain }})"
+        toolchain: ["1.48", stable, nightly]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
