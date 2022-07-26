@@ -33,6 +33,7 @@
     any(target_os = "netbsd", target_os = "openbsd"),
     path = "tz_netbsd.rs"
 )]
+#[cfg_attr(target_os = "illumos", path = "tz_illumos.rs")]
 mod platform;
 
 /// Error types
