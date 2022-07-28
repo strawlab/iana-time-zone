@@ -4,5 +4,5 @@ pub fn get_timezone_inner() -> std::result::Result<String, crate::GetTimezoneErr
 
 compile_error!(
     "iana-time-zone is currently implemented for Linux, Window, MacOS, FreeBSD, NetBSD, \
-    OpenBSD, Dragonfly, WebAssembly (browser), iOS, and Illumos.",
+    OpenBSD, Dragonfly, WebAssembly (browser), iOS, Illumos and Android.",
 );

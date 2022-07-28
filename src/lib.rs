@@ -34,6 +34,7 @@
     path = "tz_netbsd.rs"
 )]
 #[cfg_attr(target_os = "illumos", path = "tz_illumos.rs")]
+#[cfg_attr(target_os = "android", path = "tz_android.rs")]
 mod platform;
 
 /// Error types
