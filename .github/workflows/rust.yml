@@ -83,6 +83,10 @@ jobs:
           - x86_64-unknown-freebsd
           - x86_64-unknown-illumos
           - x86_64-unknown-netbsd
+          - x86_64-linux-android
+          - i686-linux-android
+          - arm-linux-androideabi
+          - aarch64-linux-android
     runs-on: ubuntu-latest
     name: "Build for ${{ matrix.target }}"
     steps:
