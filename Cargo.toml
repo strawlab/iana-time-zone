@@ -10,6 +10,10 @@ categories = ["date-and-time", "internationalization", "os"]
 readme = "README.md"
 edition = "2018"
 
+[features]
+# When enabled, the library will succeed to compile for unknown target platforms, and return an `Err(GetTimezoneError::OsError)` at runtime.
+fallback = []
+
 [target.'cfg(target_os = "android")'.dependencies]
 android_system_properties = "0.1.4"
 
