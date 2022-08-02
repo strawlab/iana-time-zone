@@ -30,7 +30,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
           restore-keys: |
             ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-
             ${{ runner.os }}-test-
@@ -63,7 +63,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
           restore-keys: |
             ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-
             ${{ runner.os }}-wasm-
@@ -103,7 +103,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
             ${{ runner.os }}-${{ matrix.target }}-
@@ -136,7 +136,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
             ${{ runner.os }}-${{ matrix.target }}-
@@ -169,7 +169,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
           restore-keys: |
             ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-
             ${{ runner.os }}-check-
@@ -197,7 +197,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
           restore-keys: |
             ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-
             ${{ runner.os }}-doc-
@@ -217,7 +217,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-audit-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-audit-${{ hashFiles('Cargo.toml') }}
           restore-keys: |
             ${{ runner.os }}-audit-
           path: |
