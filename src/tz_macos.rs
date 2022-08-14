@@ -4,20 +4,19 @@ use core_foundation_sys::timezone::{CFTimeZoneCopySystem, CFTimeZoneGetName};
 
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     unsafe {
-        Dropping::new(CFTimeZoneCopySystem())
-            .and_then(|tz| Dropping::new(CFTimeZoneGetName(tz.0)))
-            .and_then(|name| {
+        if let Some(tz) = Dropping::new(CFTimeZoneCopySystem()) {
+            if let Some(name) = Dropping::new(CFTimeZoneGetName(tz.0)) {
                 let name = CFStringGetCStringPtr(name.0, kCFStringEncodingUTF8);
-                if name.is_null() {
-                    None
-                } else {
-                    Some(name)
+                if !name.is_null() {
+                    let name = std::ffi::CStr::from_ptr(name);
+                    if let Ok(name) = name.to_str() {
+                        return Ok(name.to_owned());
+                    }
                 }
-            })
-            .and_then(|name| std::ffi::CStr::from_ptr(name).to_str().ok())
-            .map(|name| name.to_owned())
-            .ok_or(crate::GetTimezoneError::OsError)
+            }
+        }
     }
+    Err(crate::GetTimezoneError::OsError)
 }
 
 struct Dropping<T>(*const T);
