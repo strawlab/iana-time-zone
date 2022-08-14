@@ -5,13 +5,13 @@
 [![Crate License](https://img.shields.io/crates/l/iana-time-zone.svg)](https://crates.io/crates/iana-time-zone)
 [![build](https://github.com/strawlab/iana-time-zone/workflows/build/badge.svg?branch=master)](https://github.com/strawlab/iana-time-zone/actions?query=branch%3Amaster)
 
-This small utility crate gets get the IANA time zone for the current system.
+This small utility crate gets the IANA time zone for the current system.
 This is also known the [tz database](https://en.wikipedia.org/wiki/Tz_database),
 tzdata, the zoneinfo database, and the Olson database.
 
 Example:
 
-```
+```rust
 // Get the current time zone as a string.
 let tz_str = iana_time_zone::get_timezone()?;
 println!("The current time zone is: {}", tz_str);
