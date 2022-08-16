@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.45] - 2022-08-16
 ### Fixed
-- Fix potential use after free in MacOS / iOS ([#54](https://github.com/strawlab/iana-time-zone/pull/54))
+- Fix potential use after free in MacOS / iOS ([#54](https://github.com/strawlab/iana-time-zone/pull/54), [RUSTSEC-2022-0049](https://rustsec.org/advisories/RUSTSEC-2022-0049.html))
 - Fix typos in README ([#53](https://github.com/strawlab/iana-time-zone/pull/53))
 
 ## [0.1.44] - 2022-08-11
@@ -111,7 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.19] - 2021-09-27
 ### Changed
-- Update `windows` requirement from 0.19 to 0.21 ([#18](https://github.com/strawlab/iana-time-zone/pull/18)) ([#20](https://github.com/strawlab/iana-time-zone/pull/20))
+- Update `windows` requirement from 0.19 to 0.21 ([#18](https://github.com/strawlab/iana-time-zone/pull/18), [#20](https://github.com/strawlab/iana-time-zone/pull/20))
 - Update `chrono-tz` requirement from 0.5 to 0.6 ([#19](https://github.com/strawlab/iana-time-zone/pull/19))
 
 ## [0.1.18] - 2021-08-23
