@@ -33,7 +33,10 @@
     any(target_os = "netbsd", target_os = "openbsd"),
     path = "tz_netbsd.rs"
 )]
-#[cfg_attr(target_os = "illumos", path = "tz_illumos.rs")]
+#[cfg_attr(
+    any(target_os = "illumos", target_os = "solaris"),
+    path = "tz_illumos.rs"
+)]
 #[cfg_attr(target_os = "android", path = "tz_android.rs")]
 mod platform;
 
