@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.46] - 2022-08-18
+### Added
+- Implement for Solaris ([#55](https://github.com/strawlab/iana-time-zone/pull/55))
+
 ## [0.1.45] - 2022-08-16
 ### Fixed
 - Fix potential use after free in MacOS / iOS ([#54](https://github.com/strawlab/iana-time-zone/pull/54), [RUSTSEC-2022-0049](https://rustsec.org/advisories/RUSTSEC-2022-0049.html))

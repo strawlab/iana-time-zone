@@ -87,6 +87,7 @@ jobs:
           - i686-linux-android
           - arm-linux-androideabi
           - aarch64-linux-android
+          - sparcv9-sun-solaris
     runs-on: ubuntu-latest
     name: "Build for ${{ matrix.target }}"
     steps:
