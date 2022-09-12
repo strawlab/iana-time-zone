@@ -27,18 +27,6 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.toolchain }}
           override: true
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-test-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       - run: cargo test --all-targets
       - run: cargo run --example stress-test
 
@@ -60,19 +48,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-wasm-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.cargo/bin/
-            target/
       - run: which wasm-pack || cargo install wasm-pack
       - run: wasm-pack test --node
 
@@ -101,19 +76,6 @@ jobs:
           toolchain: stable
           override: true
           target: ${{ matrix.target }}
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-${{ matrix.target }}-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.cargo/bin/
-            target/
       - run: which cross || cargo install cross
       - run: cross build --target ${{ matrix.target }} --examples
 
@@ -134,19 +96,6 @@ jobs:
           toolchain: stable
           override: true
           target: ${{ matrix.target }}
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-${{ matrix.target }}-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.cargo/bin/
-            target/
       - run: which cross || cargo install cross
       - run: cross build --target ${{ matrix.target }} --examples
 
@@ -167,18 +116,6 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           override: true
           components: clippy
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-check-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       - run: cargo check --all-targets
       - run: cargo clippy --all-targets -- -D warnings
 
@@ -195,18 +132,6 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-doc-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       - run: RUSTDOCFLAGS="-D warnings" cargo doc --all-features
 
   audit:
@@ -215,17 +140,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-audit-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-audit-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       - name: Audit
         uses: actions-rs/audit-check@v1
         with:
@@ -245,18 +159,6 @@ jobs:
           toolchain: stable
           target: x86_64-fortanix-unknown-sgx
           override: true
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-fallback-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-fallback-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-fallback-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       # Should fail (outcome is negated):
       - run: if cargo build --lib --target x86_64-fortanix-unknown-sgx; then exit 1; fi
       # Should succeed:
