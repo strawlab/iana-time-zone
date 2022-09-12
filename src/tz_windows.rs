@@ -1,6 +1,5 @@
 use std::{io, mem, ptr, slice, sync};
 
-use interfaces::ITimeZoneOnCalendar;
 use winapi::ctypes::wchar_t;
 use winapi::shared::winerror::{CO_E_NOTINITIALIZED, FAILED, HRESULT};
 use winapi::um::combaseapi::CoIncrementMTAUsage;
@@ -14,9 +13,11 @@ use winapi::winrt::winstring::{
 };
 use winapi::Interface;
 
+use self::interfaces::ITimeZoneOnCalendar;
+
 macro_rules! wstring {
-    ($($letters:literal)* $(,)?) => {
-        [ $($letters as wchar_t,)* ]
+    ($($letters:tt)+) => {
+        [ $($letters as wchar_t,)+ ]
     };
 }
 

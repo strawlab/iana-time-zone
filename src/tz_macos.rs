@@ -49,7 +49,7 @@ unsafe fn get_timezone() -> Option<String> {
     {
         // Could not convert the name.
         None
-    } else if !(1..MAX_LEN as isize).contains(&buf_bytes) {
+    } else if buf_bytes < 1 || buf_bytes >= MAX_LEN as isize {
         // The name should not be empty, or excessively long.
         None
     } else {
@@ -74,7 +74,7 @@ impl<T> Dropping<T> {
         if v.is_null() {
             None
         } else {
-            Some(Self(v))
+            Some(Dropping(v))
         }
     }
 }

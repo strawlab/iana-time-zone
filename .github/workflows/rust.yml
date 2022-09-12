@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         runs-on: [ubuntu-20.04, windows-2022, macos-12]
-        toolchain: ["1.38", stable, nightly]
+        toolchain: ["1.31", stable, nightly]
     runs-on: ${{ matrix.runs-on }}
     name: "Test (${{ matrix.runs-on }}/${{ matrix.toolchain }})"
     steps:
@@ -153,7 +153,7 @@ jobs:
   check:
     strategy:
       matrix:
-        toolchain: ["1.38", stable, nightly]
+        toolchain: ["1.31", stable, nightly]
     name: "Check (${{ matrix.toolchain }})"
     runs-on: ubuntu-latest
     steps:
