@@ -64,9 +64,9 @@ impl std::error::Error for GetTimezoneError {
 impl std::fmt::Display for GetTimezoneError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         f.write_str(match self {
-            Self::FailedParsingString => "GetTimezoneError::FailedParsingString",
-            Self::IoError(err) => return err.fmt(f),
-            Self::OsError => "OsError",
+            GetTimezoneError::FailedParsingString => "GetTimezoneError::FailedParsingString",
+            GetTimezoneError::IoError(err) => return err.fmt(f),
+            GetTimezoneError::OsError => "OsError",
         })
     }
 }
