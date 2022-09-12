@@ -12,11 +12,17 @@ on:
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         runs-on: [ubuntu-20.04, windows-2022, macos-12]
-        toolchain: ["1.31", stable, nightly]
+        toolchain:
+          - "1.31"
+          - stable
+          - nightly
+        versions:
+          - ""
+          - "-Zminimal-versions"
     runs-on: ${{ matrix.runs-on }}
-    name: "Test (${{ matrix.runs-on }}/${{ matrix.toolchain }})"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,24 +33,28 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.toolchain }}
           override: true
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-test-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        env:
+          RUSTC_BOOTSTRAP: 1
       - run: cargo test --all-targets
       - run: cargo run --example stress-test
 
-  test-wasm:
+  build-wasm:
+    strategy:
+      fail-fast: false
+      matrix:
+        versions:
+          - ""
+          - "-Zminimal-versions"
+        toolchain:
+          - stable
+          - nightly
+        include:
+          # Without `-Zminimal-versions` a too recent bumpalo version is selected. Newer versions use `edition = "2021"`.
+          - versions: "-Zminimal-versions"
+          - toolchain: "1.31"
     runs-on: ubuntu-latest
-    name: "Test WebAssembly"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -53,31 +63,51 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+          target: wasm32-unknown-unknown
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        env:
+          RUSTC_BOOTSTRAP: 1
+      - run: cargo build --lib
+
+  test-wasm:
+    strategy:
+      fail-fast: false
+      matrix:
+        versions:
+          - ""
+          - "-Zminimal-versions"
+        toolchain:
+          - stable
+          - nightly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: wasm32-unknown-unknown
       - name: Install Node
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-wasm-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-wasm-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.cargo/bin/
-            target/
-      - run: which wasm-pack || cargo install wasm-pack
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        env:
+          RUSTC_BOOTSTRAP: 1
+      - run: which wasm-pack || cargo +stable install wasm-pack
       - run: wasm-pack test --node
 
   build-cross:
     strategy:
+      fail-fast: false
       matrix:
         target:
           - x86_64-unknown-freebsd
@@ -88,8 +118,14 @@ jobs:
           - arm-linux-androideabi
           - aarch64-linux-android
           - sparcv9-sun-solaris
+        versions:
+          - ""
+          - "-Zminimal-versions"
+        toolchain:
+          # There are no docker images for old versions.
+          - stable
+          - nightly
     runs-on: ubuntu-latest
-    name: "Build for ${{ matrix.target }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -98,31 +134,36 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: ${{ matrix.target }}
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-${{ matrix.target }}-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.cargo/bin/
-            target/
-      - run: which cross || cargo install cross
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        env:
+          RUSTC_BOOTSTRAP: 1
+      - run: which cross || cargo +stable install cross
       - run: cross build --target ${{ matrix.target }} --examples
 
   build-ios-cross:
     strategy:
+      fail-fast: false
       matrix:
-        target: [aarch64-apple-ios-sim, aarch64-apple-ios, x86_64-apple-ios]
+        toolchain:
+          - "1.38"
+          - stable
+          - nightly
+        target:
+          - aarch64-apple-ios-sim
+          - aarch64-apple-ios
+          - x86_64-apple-ios
+        versions:
+          - ""
+          - "-Zminimal-versions"
+        exclude:
+          # Support for this target was added quite recently.
+          - target: aarch64-apple-ios-sim
+          - toolchain: "1.38"
     runs-on: macos-12
-    name: "Build for ${{ matrix.target }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -131,30 +172,27 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.toolchain }}
           override: true
           target: ${{ matrix.target }}
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.target }}-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-${{ matrix.target }}-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.cargo/bin/
-            target/
-      - run: which cross || cargo install cross
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        env:
+          RUSTC_BOOTSTRAP: 1
+      - run: which cross || cargo +stable install cross
       - run: cross build --target ${{ matrix.target }} --examples
 
   check:
     strategy:
+      fail-fast: false
       matrix:
-        toolchain: ["1.31", stable, nightly]
-    name: "Check (${{ matrix.toolchain }})"
+        toolchain:
+          - "1.31"
+          - stable
+          - nightly
+        versions:
+          - ""
+          - "-Zminimal-versions"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -167,23 +205,14 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           override: true
           components: clippy
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-check-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-check-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        env:
+          RUSTC_BOOTSTRAP: 1
       - run: cargo check --all-targets
       - run: cargo clippy --all-targets -- -D warnings
 
   doc:
-    name: "Documentation"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -195,44 +224,19 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-doc-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-doc-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       - run: RUSTDOCFLAGS="-D warnings" cargo doc --all-features
 
   audit:
-    name: "Cargo audit"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-audit-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-audit-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       - name: Audit
         uses: actions-rs/audit-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   fallback:
-    name: "Build with fallback"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -245,18 +249,6 @@ jobs:
           toolchain: stable
           target: x86_64-fortanix-unknown-sgx
           override: true
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-fallback-${{ steps.actions-rs.outputs.rustc_hash }}-${{ hashFiles('Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-fallback-${{ steps.actions-rs.outputs.rustc_hash }}-
-            ${{ runner.os }}-fallback-
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
       # Should fail (outcome is negated):
       - run: if cargo build --lib --target x86_64-fortanix-unknown-sgx; then exit 1; fi
       # Should succeed:
