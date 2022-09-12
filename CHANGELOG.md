@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.48] - 2022-09-12
+### Changed
+- Downgrade requirements for WASM dependencies ([#58](https://github.com/strawlab/iana-time-zone/pull/58))
+- Reduce MSRV for Tier 1 platforms to 1.31 ([#59](https://github.com/strawlab/iana-time-zone/pull/59))
+
 ## [0.1.47] - 2022-08-30
 ### Changed
 - Update `android_system_properties` to v0.1.5 to run 9786% faster (YMMV) ([#56](https://github.com/strawlab/iana-time-zone/pull/56))
@@ -194,6 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implement for Linux, Windows, MacOS 
 
+[0.1.48]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.48
 [0.1.47]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.47
 [0.1.46]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.46
 [0.1.45]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.45
