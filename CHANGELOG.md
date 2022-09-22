@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.49] - 2022-09-22
+### Changed
+- `once_cell` dependency is not needed ([#61](https://github.com/strawlab/iana-time-zone/pull/58))
+
 ## [0.1.48] - 2022-09-12
 ### Changed
 - Downgrade requirements for WASM dependencies ([#58](https://github.com/strawlab/iana-time-zone/pull/58))
@@ -199,6 +203,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implement for Linux, Windows, MacOS 
 
+[0.1.49]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.49
 [0.1.48]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.48
 [0.1.47]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.47
 [0.1.46]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.46
