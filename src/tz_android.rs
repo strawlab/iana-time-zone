@@ -15,15 +15,15 @@ pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
 }
 
 fn get_properties() -> Option<&'static AndroidSystemProperties> {
-    static INITALIZED: Once = Once::new();
+    static INITIALIZED: Once = Once::new();
     static mut PROPERTIES: Option<AndroidSystemProperties> = None;
 
-    INITALIZED.call_once(|| {
+    INITIALIZED.call_once(|| {
         let properties = AndroidSystemProperties::new();
-        // SAFETY: `INITALIZED` is synchronizing. The variable is only assigned to once.
+        // SAFETY: `INITIALIZED` is synchronizing. The variable is only assigned to once.
         unsafe { PROPERTIES = Some(properties) };
     });
 
-    // SAFETY: `INITALIZED` is synchronizing. The variable is only assigned to once.
+    // SAFETY: `INITIALIZED` is synchronizing. The variable is only assigned to once.
     unsafe { PROPERTIES.as_ref() }
 }
