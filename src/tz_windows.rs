@@ -28,7 +28,7 @@ const WINDOWS_GLOBALIZATION_CALENDAR: &[wchar_t] = &wstring!(
     0
 );
 
-static INITALIZED: sync::Once = sync::Once::new();
+static INITIALIZED: sync::Once = sync::Once::new();
 static mut FACTORY: Result<Unknown<IActivationFactory>, HRESULT> = Err(0);
 
 #[repr(transparent)]
@@ -55,7 +55,7 @@ unsafe fn get_timezone() -> Result<String, HRESULT> {
     // change their timezone during the execution of the program. Caching the constructor makes
     // the stress-test example run about 3% faster.
 
-    INITALIZED.call_once(|| initialize_factory());
+    INITIALIZED.call_once(|| initialize_factory());
     let factory = match FACTORY {
         Ok(ref factory) => factory,
         Err(err) => return Err(err),
