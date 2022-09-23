@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.50] - 2022-09-23
 ### Fixed
-- Reduce MSRV for Android again
+- Reduce MSRV for Android again ([#62](https://github.com/strawlab/iana-time-zone/pull/62))
 
 ## [0.1.49] - 2022-09-22
 ### Changed
