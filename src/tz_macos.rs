@@ -20,12 +20,22 @@ fn get_timezone() -> Option<String> {
         return None;
     }
 
-    // If the name is encoded in UTF-8, copy it directly.
-    let cstr = unsafe { CFStringGetCStringPtr(name, kCFStringEncodingUTF8) };
-    if !cstr.is_null() {
-        let cstr = unsafe { std::ffi::CStr::from_ptr(cstr) };
-        if let Ok(name) = cstr.to_str() {
-            return Some(name.to_owned());
+    {
+        // New block prevents any variables escaping this scope.
+
+        // If the name is encoded in UTF-8, copy it directly.
+        let cstr_ptr = unsafe { CFStringGetCStringPtr(name, kCFStringEncodingUTF8) };
+        if !cstr_ptr.is_null() {
+            // Safety: 1) `cstr_ptr` must contain valid nul terminator. 2)
+            // `cstr_ptr` must be valid for reads of bytes up to and including
+            // the null terminator. 3) `cstr_ptr` must remain valid for lifetime
+            // of `cstr`. We assume #1 and #2 are true based on the result from
+            // CFStringGetCStringPtr. We ensure #3 by cloning the underlying &str
+            // to a String.
+            let cstr = unsafe { std::ffi::CStr::from_ptr(cstr_ptr) };
+            if let Ok(name) = cstr.to_str() {
+                return Some(name.to_owned());
+            }
         }
     }
 
