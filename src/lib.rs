@@ -38,6 +38,7 @@
     path = "tz_illumos.rs"
 )]
 #[cfg_attr(target_os = "android", path = "tz_android.rs")]
+#[cfg_attr(target_os = "haiku", path = "tz_haiku.rs")]
 mod platform;
 
 /// Error types
