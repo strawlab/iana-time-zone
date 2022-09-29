@@ -14,6 +14,8 @@ fn get_timezone() -> Option<String> {
     const MAX_LEN: usize = 32;
 
     // Get system time zone, and borrow its name.
+
+    // SAFETY: `Dropping::new()` would have returned `None` if the call to `CFTimeZoneCopySystem()` had failed.
     let tz = Dropping::new(unsafe { CFTimeZoneCopySystem() })?;
     let name = unsafe { CFTimeZoneGetName(tz.0) };
     if name.is_null() {
@@ -24,9 +26,12 @@ fn get_timezone() -> Option<String> {
         // New block prevents any variables escaping this scope.
 
         // If the name is encoded in UTF-8, copy it directly.
+
+        // SAFETY: we tested that `name` is not null, so we know that the result
+        // of `CFTimeZoneGetName()` is valid
         let cstr_ptr = unsafe { CFStringGetCStringPtr(name, kCFStringEncodingUTF8) };
         if !cstr_ptr.is_null() {
-            // Safety: 1) `cstr_ptr` must contain valid nul terminator. 2)
+            // SAFETY: 1) `cstr_ptr` must contain valid nul terminator. 2)
             // `cstr_ptr` must be valid for reads of bytes up to and including
             // the null terminator. 3) `cstr_ptr` must remain valid for lifetime
             // of `cstr`. We assume #1 and #2 are true based on the result from
@@ -44,6 +49,7 @@ fn get_timezone() -> Option<String> {
     let mut buf_bytes = 0;
     let range = CFRange {
         location: 0,
+        // SAFETY: we tested that `name` is not null, so we know that the result of `CFTimeZoneGetName()` is valid
         length: unsafe { CFStringGetLength(name) },
     };
     if unsafe {
