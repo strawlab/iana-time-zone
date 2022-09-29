@@ -1,9 +1,3 @@
-use core_foundation_sys::base::{Boolean, CFRange, CFRelease, CFTypeRef};
-use core_foundation_sys::string::{
-    kCFStringEncodingUTF8, CFStringGetBytes, CFStringGetCStringPtr, CFStringGetLength, CFStringRef,
-};
-use core_foundation_sys::timezone::{CFTimeZoneCopySystem, CFTimeZoneGetName, CFTimeZoneRef};
-
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     get_timezone().ok_or(crate::GetTimezoneError::OsError)
 }
@@ -15,7 +9,7 @@ fn get_timezone() -> Option<String> {
     let mut buf = [0; MAX_LEN];
 
     // Get system time zone, and borrow its name.
-    let tz = SystemTimeZone::new()?;
+    let tz = system_time_zone::SystemTimeZone::new()?;
     let name = tz.name()?;
 
     // If the name is encoded in UTF-8, copy it directly.
@@ -26,7 +20,7 @@ fn get_timezone() -> Option<String> {
         name.to_utf8(&mut buf)?
     };
 
-    if name.len() < 1 || name.len() >= MAX_LEN {
+    if name.is_empty() || name.len() >= MAX_LEN {
         // The name should not be empty, or excessively long.
         None
     } else {
@@ -34,86 +28,105 @@ fn get_timezone() -> Option<String> {
     }
 }
 
-struct SystemTimeZone(CFTimeZoneRef);
+mod system_time_zone {
+    //! create a safe wrapper around `CFTimeZoneRef`
+    use core_foundation_sys::base::{CFRelease, CFTypeRef};
+    use core_foundation_sys::timezone::{CFTimeZoneCopySystem, CFTimeZoneGetName, CFTimeZoneRef};
 
-struct StringRef<'a> {
-    string: CFStringRef,
-    phantom: core::marker::PhantomData<&'a SystemTimeZone>,
-}
+    pub(crate) struct SystemTimeZone(CFTimeZoneRef);
 
-impl Drop for SystemTimeZone {
-    fn drop(&mut self) {
-        // SAFETY: `SystemTimeZone` is only ever created with a valid `CFTimeZoneRef`.
-        unsafe { CFRelease(self.0 as CFTypeRef) };
-    }
-}
-
-impl SystemTimeZone {
-    fn new() -> Option<Self> {
-        // SAFETY: No invariants to uphold. We'll release the pointer when we don't need it anymore.
-        let v = unsafe { CFTimeZoneCopySystem() };
-        if v.is_null() {
-            None
-        } else {
-            Some(SystemTimeZone(v))
+    impl Drop for SystemTimeZone {
+        fn drop(&mut self) {
+            // SAFETY: `SystemTimeZone` is only ever created with a valid `CFTimeZoneRef`.
+            unsafe { CFRelease(self.0 as CFTypeRef) };
         }
     }
 
-    fn name(&self) -> Option<StringRef> {
-        // SAFETY: `SystemTimeZone` is only ever created with a valid `CFTimeZoneRef`.
-        let string = unsafe { CFTimeZoneGetName(self.0) };
-        if string.is_null() {
-            None
-        } else {
-            Some(StringRef {
-                string,
-                phantom: core::marker::PhantomData,
-            })
-        }
-    }
-}
-
-impl<'a> StringRef<'a> {
-    fn as_utf8(&self) -> Option<&'a str> {
-        // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
-        let v = unsafe { CFStringGetCStringPtr(self.string, kCFStringEncodingUTF8) };
-        if !v.is_null() {
-            // SAFETY: `CFStringGetCStringPtr()` returns NUL-terminated strings.
-            let v = unsafe { std::ffi::CStr::from_ptr(v) };
-            if let Ok(v) = v.to_str() {
-                return Some(v);
+    impl SystemTimeZone {
+        pub(crate) fn new() -> Option<Self> {
+            // SAFETY: No invariants to uphold. We'll release the pointer when we don't need it anymore.
+            let v: CFTimeZoneRef = unsafe { CFTimeZoneCopySystem() };
+            if v.is_null() {
+                None
+            } else {
+                Some(SystemTimeZone(v))
             }
         }
-        None
+
+        pub(crate) fn name(&self) -> Option<super::string_ref::StringRef<Self>> {
+            // SAFETY: `SystemTimeZone` is only ever created with a valid `CFTimeZoneRef`.
+            let string = unsafe { CFTimeZoneGetName(self.0) };
+            if string.is_null() {
+                None
+            } else {
+                Some(super::string_ref::StringRef::new(string, self))
+            }
+        }
+    }
+}
+
+mod string_ref {
+    //! create safe wrapper around `CFStringRef`
+
+    use core_foundation_sys::{
+        base::{Boolean, CFRange},
+        string::{
+            kCFStringEncodingUTF8, CFStringGetBytes, CFStringGetCStringPtr, CFStringGetLength,
+            CFStringRef,
+        },
+    };
+
+    pub(crate) struct StringRef<'a, T> {
+        string: CFStringRef,
+        _parent: &'a T,
     }
 
-    fn to_utf8<'b>(&self, buf: &'b mut [u8]) -> Option<&'b str> {
-        // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
-        let length = unsafe { CFStringGetLength(self.string) };
+    impl<'a, T> StringRef<'a, T> {
+        pub(crate) fn new(string: CFStringRef, _parent: &'a T) -> Self {
+            Self { string, _parent }
+        }
 
-        let mut buf_bytes = 0;
-        let range = CFRange {
-            location: 0,
-            length,
-        };
-
-        let converted_bytes = unsafe {
+        pub(crate) fn as_utf8(&self) -> Option<&'a str> {
             // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
-            CFStringGetBytes(
-                self.string,
-                range,
-                kCFStringEncodingUTF8,
-                b'\0',
-                false as Boolean,
-                buf.as_mut_ptr(),
-                buf.len() as isize,
-                &mut buf_bytes,
-            )
-        };
-        if converted_bytes != length || buf_bytes < 0 || buf_bytes as usize > buf.len() {
+            let v = unsafe { CFStringGetCStringPtr(self.string, kCFStringEncodingUTF8) };
+            if !v.is_null() {
+                // SAFETY: `CFStringGetCStringPtr()` returns NUL-terminated strings.
+                let v = unsafe { std::ffi::CStr::from_ptr(v) };
+                if let Ok(v) = v.to_str() {
+                    return Some(v);
+                }
+            }
             None
-        } else {
-            std::str::from_utf8(&buf[..buf_bytes as usize]).ok()
+        }
+
+        pub(crate) fn to_utf8<'b>(&self, buf: &'b mut [u8]) -> Option<&'b str> {
+            // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
+            let length = unsafe { CFStringGetLength(self.string) };
+
+            let mut buf_bytes = 0;
+            let range = CFRange {
+                location: 0,
+                length,
+            };
+
+            let converted_bytes = unsafe {
+                // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
+                CFStringGetBytes(
+                    self.string,
+                    range,
+                    kCFStringEncodingUTF8,
+                    b'\0',
+                    false as Boolean,
+                    buf.as_mut_ptr(),
+                    buf.len() as isize,
+                    &mut buf_bytes,
+                )
+            };
+            if converted_bytes != length || buf_bytes < 0 || buf_bytes as usize > buf.len() {
+                None
+            } else {
+                std::str::from_utf8(&buf[..buf_bytes as usize]).ok()
+            }
         }
     }
 }
