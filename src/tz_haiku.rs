@@ -14,10 +14,12 @@ pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     // SAFETY: the buffer is valid and called function ensures that sizeof(u8) == sizeof(c_char)
     let len = unsafe { ffi::get_tz(buf.as_mut_ptr(), buf.len()) };
     // The name should not be empty, or excessively long.
-    if len > 0 && len < buf.len() {
-        let s = std::str::from_utf8(&buf[..len]).map_err(|_| crate::GetTimezoneError::OsError)?;
-        Ok(s.to_owned())
-    } else {
-        Err(crate::GetTimezoneError::OsError)
+    match buf.get(..len) {
+        Some(s) if s.is_empty() => Err(crate::GetTimezoneError::OsError),
+        Some(s) => {
+            let s = std::str::from_utf8(s).map_err(|_| crate::GetTimezoneError::OsError)?;
+            Ok(s.to_owned())
+        }
+        None => Err(crate::GetTimezoneError::OsError),
     }
 }
