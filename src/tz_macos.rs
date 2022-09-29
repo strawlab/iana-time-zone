@@ -122,11 +122,13 @@ mod string_ref {
                     &mut buf_bytes,
                 )
             };
-            if converted_bytes != length || buf_bytes < 0 || buf_bytes as usize > buf.len() {
-                None
-            } else {
-                std::str::from_utf8(&buf[..buf_bytes as usize]).ok()
+            if converted_bytes != length {
+                return None;
             }
+            use std::convert::TryFrom;
+            let len = usize::try_from(buf_bytes).ok()?;
+            let s = buf.get(..len)?;
+            std::str::from_utf8(s).ok()
         }
     }
 }
