@@ -29,3 +29,9 @@ wasm-bindgen = "0.2.70"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = "0.3"
+
+[target.'cfg(target_os = "haiku")'.dependencies]
+cxx = "1.0.34"
+
+[target.'cfg(target_os = "haiku")'.build-dependencies]
+cxx-build = "1.0.34"
