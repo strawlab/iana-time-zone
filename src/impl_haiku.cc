@@ -31,6 +31,8 @@ size_t ::tz_haiku::get_tz(uint8_t *buf, size_t buf_len) {
             return 0;
         }
 
+        // BString::String() returns a borrowed string.
+        // https://www.haiku-os.org/docs/api/classBString.html#ae4fe78b06c8e3310093b80305e14ba87
         const char *sname(bname.String());
         if (!sname) {
             return 0;
