@@ -30,6 +30,7 @@ fn get_timezone() -> Option<String> {
 
 mod system_time_zone {
     //! create a safe wrapper around `CFTimeZoneRef`
+
     use core_foundation_sys::base::{CFRelease, CFTypeRef};
     use core_foundation_sys::timezone::{CFTimeZoneCopySystem, CFTimeZoneGetName, CFTimeZoneRef};
 
@@ -68,12 +69,12 @@ mod system_time_zone {
 mod string_ref {
     //! create safe wrapper around `CFStringRef`
 
-    use core_foundation_sys::{
-        base::{Boolean, CFRange},
-        string::{
-            kCFStringEncodingUTF8, CFStringGetBytes, CFStringGetCStringPtr, CFStringGetLength,
-            CFStringRef,
-        },
+    use std::convert::TryInto;
+
+    use core_foundation_sys::base::{Boolean, CFRange};
+    use core_foundation_sys::string::{
+        kCFStringEncodingUTF8, CFStringGetBytes, CFStringGetCStringPtr, CFStringGetLength,
+        CFStringRef,
     };
 
     pub(crate) struct StringRef<'a, T> {
@@ -125,8 +126,8 @@ mod string_ref {
             if converted_bytes != length {
                 return None;
             }
-            use std::convert::TryFrom;
-            let len = usize::try_from(buf_bytes).ok()?;
+
+            let len = buf_bytes.try_into().ok()?;
             let s = buf.get(..len)?;
             std::str::from_utf8(s).ok()
         }
