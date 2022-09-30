@@ -5,5 +5,5 @@
 #include <cstddef>
 
 namespace tz_haiku {
-size_t get_tz(uint8_t *buf, size_t buf_len);
+size_t get_tz(rust::Slice<uint8_t> buf);
 }

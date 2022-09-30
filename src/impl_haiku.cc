@@ -7,11 +7,11 @@
 #include <String.h>
 #include <TimeZone.h>
 
-size_t ::tz_haiku::get_tz(uint8_t *buf, size_t buf_len) {
+size_t ::tz_haiku::get_tz(rust::Slice<uint8_t> buf) {
     try {
         static_assert(sizeof(char) == sizeof(uint8_t), "Illegal char size");
 
-        if (!buf || !buf_len) {
+        if (buf.empty()) {
             return 0;
         }
 
@@ -27,7 +27,7 @@ size_t ::tz_haiku::get_tz(uint8_t *buf, size_t buf_len) {
 
         BString bname(tz.ID());
         int32_t length(bname.Length());
-        if (length <= 0 || size_t(length) > buf_len) {
+        if (length <= 0 || size_t(length) > buf.size()) {
             return 0;
         }
 
@@ -38,7 +38,7 @@ size_t ::tz_haiku::get_tz(uint8_t *buf, size_t buf_len) {
             return 0;
         }
 
-        std::memcpy(buf, sname, length);
+        std::memcpy(buf.data(), sname, size_t(length));
         return length;
     } catch (...) {
         return 0;

@@ -1,25 +1,23 @@
 #[cxx::bridge(namespace = "tz_haiku")]
 mod ffi {
+    // SAFETY: in here "unsafe" is simply part of the syntax
     unsafe extern "C++" {
         include!("iana-time-zone/include/impl_haiku.h");
 
-        /// SAFETY: `buf` must be valid and be at least `buf_len` bytes long
-        unsafe fn get_tz(buf: *mut u8, buf_len: usize) -> usize;
+        fn get_tz(buf: &mut [u8]) -> usize;
     }
 }
 
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     // The longest name in the IANA time zone database is 25 ASCII characters long.
     let mut buf = [0u8; 32];
-    // SAFETY: the buffer is valid and called function ensures that sizeof(u8) == sizeof(c_char)
-    let len = unsafe { ffi::get_tz(buf.as_mut_ptr(), buf.len()) };
+    let len = ffi::get_tz(&mut buf);
     // The name should not be empty, or excessively long.
     match buf.get(..len) {
-        Some(s) if s.is_empty() => Err(crate::GetTimezoneError::OsError),
+        None | Some(b"") => Err(crate::GetTimezoneError::OsError),
         Some(s) => {
             let s = std::str::from_utf8(s).map_err(|_| crate::GetTimezoneError::OsError)?;
             Ok(s.to_owned())
         }
-        None => Err(crate::GetTimezoneError::OsError),
     }
 }
