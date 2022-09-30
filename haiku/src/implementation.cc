@@ -1,5 +1,5 @@
-#include "iana-time-zone/include/impl_haiku.h"
-#include "iana-time-zone/src/tz_haiku.rs.h"
+#include "iana-time-zone-haiku/src/interface.h"
+#include "iana-time-zone-haiku/src/lib.rs.h"
 
 #include <cstring>
 #include <Errors.h>
@@ -7,7 +7,7 @@
 #include <String.h>
 #include <TimeZone.h>
 
-size_t ::tz_haiku::get_tz(rust::Slice<uint8_t> buf) {
+size_t ::iana_time_zone_haiku::get_tz(rust::Slice<uint8_t> buf) {
     try {
         static_assert(sizeof(char) == sizeof(uint8_t), "Illegal char size");
 

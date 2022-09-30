@@ -4,6 +4,6 @@
 
 #include <cstddef>
 
-namespace tz_haiku {
+namespace iana_time_zone_haiku {
 size_t get_tz(rust::Slice<uint8_t> buf);
 }
