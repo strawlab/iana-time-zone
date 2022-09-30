@@ -213,15 +213,6 @@ jobs:
       - run: cargo clippy --all-targets -- -D warnings
 
   no-docker-image-check-only:
-    strategy:
-      fail-fast: false
-      matrix:
-        target:
-          # - i686-unknown-haiku  # Does not (cross) compile for 32bit
-          - x86_64-unknown-haiku
-        versions:
-          - ""
-          - "-Zminimal-versions"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -234,11 +225,7 @@ jobs:
           toolchain: nightly
           override: true
           components: rust-src
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
-        env:
-          RUSTC_BOOTSTRAP: 1
-      - run: cargo +nightly check --target ${{ matrix.target }} -Z build-std --examples
+      - run: cargo +nightly check --target x86_64-unknown-haiku -Z build-std --examples
 
   doc:
     runs-on: ubuntu-latest
