@@ -18,6 +18,8 @@ size_t ::iana_time_zone_haiku::get_tz(rust::Slice<uint8_t> buf) {
             return 0;
         }
 
+        // `BLocaleRoster::Default()` returns a reference to a statically allocated object.
+        // https://github.com/haiku/haiku/blob/8f16317/src/kits/locale/LocaleRoster.cpp#L143-L147
         BLocaleRoster *locale_roster(BLocaleRoster::Default());
         if (!locale_roster) {
             return 0;
