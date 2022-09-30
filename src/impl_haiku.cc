@@ -26,8 +26,13 @@ size_t ::tz_haiku::get_tz(rust::Slice<uint8_t> buf) {
         }
 
         BString bname(tz.ID());
-        int32_t length(bname.Length());
-        if (length <= 0 || size_t(length) > buf.size()) {
+        int32_t ilength(bname.Length());
+        if (ilength <= 0) {
+            return 0;
+        }
+
+        size_t length(ilength);
+        if (length > buf.size()) {
             return 0;
         }
 
@@ -38,7 +43,7 @@ size_t ::tz_haiku::get_tz(rust::Slice<uint8_t> buf) {
             return 0;
         }
 
-        std::memcpy(buf.data(), sname, size_t(length));
+        std::memcpy(buf.data(), sname, length);
         return length;
     } catch (...) {
         return 0;
