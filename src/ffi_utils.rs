@@ -14,7 +14,7 @@ const ANDROID_TIMEZONE_PROPERTY_NAME: &[u8] = b"persist.sys.timezone\0";
 
 /// Return a [`CStr`] to access the timezone from an Android system properties
 /// environment.
-pub fn android_timezone_property_name() -> &'static CStr {
+pub(crate) fn android_timezone_property_name() -> &'static CStr {
     // In tests or debug mode, opt into extra runtime checks.
     if cfg!(any(test, debug_assertions)) {
         return CStr::from_bytes_with_nul(ANDROID_TIMEZONE_PROPERTY_NAME).unwrap();
