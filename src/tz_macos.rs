@@ -60,7 +60,8 @@ mod system_time_zone {
             if string.is_null() {
                 None
             } else {
-                Some(super::string_ref::StringRef::new(string, self))
+                // SAFETY: here we ensure that `string` is a valid pointer.
+                Some(unsafe { super::string_ref::StringRef::new(string, self) })
             }
         }
     }
@@ -83,7 +84,8 @@ mod string_ref {
     }
 
     impl<'a, T> StringRef<'a, T> {
-        pub(crate) fn new(string: CFStringRef, _parent: &'a T) -> Self {
+        // SAFETY: `StringRef` must be valid pointer
+        pub(crate) unsafe fn new(string: CFStringRef, _parent: &'a T) -> Self {
             Self { string, _parent }
         }
 
