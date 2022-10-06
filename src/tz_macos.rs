@@ -80,6 +80,9 @@ mod string_ref {
 
     pub(crate) struct StringRef<'a, T> {
         string: CFStringRef,
+        // We exclude mutable access to the parent by taking a reference to the
+        // parent (rather than, for example, just using a marker to enforce the
+        // parent's lifetime).
         _parent: &'a T,
     }
 
