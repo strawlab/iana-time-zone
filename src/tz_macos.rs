@@ -54,6 +54,10 @@ mod system_time_zone {
             }
         }
 
+        /// Get the time zone name as a [super::string_ref::StringRef].
+        ///
+        /// The lifetime of the `StringRef` is bound to our lifetime. Mutable
+        /// access is also prevented by taking a reference to `self`.
         pub(crate) fn name(&self) -> Option<super::string_ref::StringRef<Self>> {
             // SAFETY: `SystemTimeZone` is only ever created with a valid `CFTimeZoneRef`.
             let string = unsafe { CFTimeZoneGetName(self.0) };
