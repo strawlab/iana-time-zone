@@ -3,11 +3,10 @@ use std::sync::Once;
 
 use android_system_properties::AndroidSystemProperties;
 
+use crate::ffi_utils::android_timezone_property_name;
+
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
-    // From https://android.googlesource.com/platform/ndk/+/android-4.2.2_r1.2/docs/system/libc/OVERVIEW.html
-    // The system property named 'persist.sys.timezone' contains the name of the current timezone.
-    // SAFETY: the key is NUL-terminated and there are no other NULs
-    let key = unsafe { CStr::from_bytes_with_nul_unchecked(b"persist.sys.timezone\0") };
+    let key = android_timezone_property_name();
 
     get_properties()
         .and_then(|properties| properties.get_from_cstr(key))
