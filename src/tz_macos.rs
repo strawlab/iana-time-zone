@@ -61,12 +61,7 @@ mod system_time_zone {
         pub(crate) fn name(&self) -> Option<super::string_ref::StringRef<Self>> {
             // SAFETY: `SystemTimeZone` is only ever created with a valid `CFTimeZoneRef`.
             let string = unsafe { CFTimeZoneGetName(self.0) };
-            if string.is_null() {
-                None
-            } else {
-                // SAFETY: here we ensure that `string` is a valid pointer.
-                Some(unsafe { super::string_ref::StringRef::new(string, self) })
-            }
+            super::string_ref::StringRef::new(string, self)
         }
     }
 }
@@ -92,8 +87,12 @@ mod string_ref {
 
     impl<'a, T> StringRef<'a, T> {
         // SAFETY: `StringRef` must be valid pointer
-        pub(crate) unsafe fn new(string: CFStringRef, _parent: &'a T) -> Self {
-            Self { string, _parent }
+        pub(crate) fn new(string: CFStringRef, _parent: &'a T) -> Option<Self> {
+            if string.is_null() {
+                None
+            } else {
+                Some(Self { string, _parent })
+            }
         }
 
         pub(crate) fn as_utf8(&self) -> Option<&'a str> {
