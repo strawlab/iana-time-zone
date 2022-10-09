@@ -1,9 +1,9 @@
 #include "iana-time-zone-haiku/src/interface.h"
 #include "iana-time-zone-haiku/src/lib.rs.h"
 
-#ifdef __HAIKU__
-
 #include <cstring>
+
+#ifdef __HAIKU__
 
 #include <Errors.h>
 #include <LocaleRoster.h>
@@ -57,6 +57,8 @@ size_t ::iana_time_zone_haiku::get_tz(rust::Slice<uint8_t> buf) {
 
 #else
 
-size_t ::iana_time_zone_haiku::get_tz(rust::Slice<uint8_t>) { return 0; }
+namespace iana_time_zone_haiku {
+size_t get_tz(rust::Slice<uint8_t>) { return 0; }
+}  // namespace iana_time_zone_haiku
 
 #endif
