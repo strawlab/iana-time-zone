@@ -79,7 +79,7 @@ impl std::error::Error for GetTimezoneError {
 }
 
 impl std::fmt::Display for GetTimezoneError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         f.write_str(match self {
             GetTimezoneError::FailedParsingString => "GetTimezoneError::FailedParsingString",
             GetTimezoneError::IoError(err) => return err.fmt(f),
@@ -88,7 +88,7 @@ impl std::fmt::Display for GetTimezoneError {
     }
 }
 
-impl std::convert::From<std::io::Error> for GetTimezoneError {
+impl From<std::io::Error> for GetTimezoneError {
     fn from(orig: std::io::Error) -> Self {
         GetTimezoneError::IoError(orig)
     }
@@ -99,7 +99,7 @@ impl std::convert::From<std::io::Error> for GetTimezoneError {
 /// See the module-level documentatation for a usage example and more details
 /// about this function.
 #[inline]
-pub fn get_timezone() -> std::result::Result<String, crate::GetTimezoneError> {
+pub fn get_timezone() -> Result<String, GetTimezoneError> {
     platform::get_timezone_inner()
 }
 
