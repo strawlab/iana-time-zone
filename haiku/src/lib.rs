@@ -27,3 +27,12 @@ pub fn get_timezone() -> Option<String> {
         s => Some(std::str::from_utf8(s).ok()?.to_owned()),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    #[cfg(not(target_os = "haiku"))]
+    fn test_fallback_on_non_haiku_platforms() {
+        assert!(super::get_timezone().is_none());
+    }
+}
