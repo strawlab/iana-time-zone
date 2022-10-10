@@ -1,9 +1,9 @@
 #include "iana-time-zone-haiku/src/interface.h"
 #include "iana-time-zone-haiku/src/lib.rs.h"
 
-#include <cstring>
-
 #ifdef __HAIKU__
+
+#include <cstring>
 
 #include <Errors.h>
 #include <LocaleRoster.h>
