@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.51] - 2022-10-08
+### Changed
+- bump MSRV to 1.38 ([#70](https://github.com/strawlab/iana-time-zone/pull/70))
+- Refactor Android property key CStr construction to add tests ([#69](https://github.com/strawlab/iana-time-zone/pull/69))
+- Refactor MacOS implementation a lot ([#67](https://github.com/strawlab/iana-time-zone/pull/67))
+
+### Added
+- Implement for Haiku ([#66](https://github.com/strawlab/iana-time-zone/pull/66))
+
+### Fixed
+- Fix spelling of 'initialized' in sync::Once statics ([#63](https://github.com/strawlab/iana-time-zone/pull/63))
+
 ## [0.1.50] - 2022-09-23
 ### Fixed
 - Reduce MSRV for Android again ([#62](https://github.com/strawlab/iana-time-zone/pull/62))
@@ -54,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implement illumos ([#44](https://github.com/strawlab/iana-time-zone/pull/44))
 ### Changed
-- Update examples in README 
+- Update examples in README
 
 ## [0.1.37] - 2022-07-23
 ### Added
@@ -205,55 +217,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2020-06-27
 ### Added
-- Implement for Linux, Windows, MacOS 
+- Implement for Linux, Windows, MacOS
 
+[0.1.51]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.51
+[0.1.50]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.50
 [0.1.49]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.49
 [0.1.48]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.48
 [0.1.47]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.47
 [0.1.46]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.46
 [0.1.45]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.45
-[0.1.44]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.44
-[0.1.43]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.43
-[0.1.42]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.42
-[0.1.41]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.41
-[0.1.40]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.40
-[0.1.39]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.39
-[0.1.38]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.38
-[0.1.37]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.37
-[0.1.36]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.36
-[0.1.35]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.35
-[0.1.34]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.34
-[0.1.33]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.33
-[0.1.32]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.32
-[0.1.31]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.31
-[0.1.30]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.30
-[0.1.29]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.29
-[0.1.28]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.28
-[0.1.27]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.27
-[0.1.26]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.26
-[0.1.25]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.25
-[0.1.24]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.24
-[0.1.23]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.23
-[0.1.22]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.22
-[0.1.21]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.21
-[0.1.20]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.20
-[0.1.19]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.19
-[0.1.18]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.18
-[0.1.17]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.17
-[0.1.16]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.16
-[0.1.15]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.15
-[0.1.14]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.14
-[0.1.13]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.13
-[0.1.12]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.12
-[0.1.11]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.11
-[0.1.10]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.10
-[0.1.9]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.9
-[0.1.8]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.8
-[0.1.7]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.7
-[0.1.6]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.6
-[0.1.5]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.5
-[0.1.4]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.4
-[0.1.3]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.3
-[0.1.2]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.2
-[0.1.1]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.1
-[0.1.0]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.0
+[0.1.44]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.44
+[0.1.43]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.43
+[0.1.42]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.42
+[0.1.41]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.41
+[0.1.40]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.40
+[0.1.39]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.39
+[0.1.38]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.38
+[0.1.37]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.37
+[0.1.36]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.36
+[0.1.35]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.35
+[0.1.34]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.34
+[0.1.33]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.33
+[0.1.32]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.32
+[0.1.31]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.31
+[0.1.30]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.30
+[0.1.29]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.29
+[0.1.28]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.28
+[0.1.27]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.27
+[0.1.26]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.26
+[0.1.25]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.25
+[0.1.24]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.24
+[0.1.23]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.23
+[0.1.22]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.22
+[0.1.21]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.21
+[0.1.20]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.20
+[0.1.19]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.19
+[0.1.18]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.18
+[0.1.17]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.17
+[0.1.16]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.16
+[0.1.15]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.15
+[0.1.14]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.14
+[0.1.13]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.13
+[0.1.12]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.12
+[0.1.11]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.11
+[0.1.10]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.10
+[0.1.9]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.9
+[0.1.8]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.8
+[0.1.7]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.7
+[0.1.6]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.6
+[0.1.5]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.5
+[0.1.4]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.4
+[0.1.3]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.3
+[0.1.2]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.2
+[0.1.1]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.1
+[0.1.0]: https://github.com/strawlab/iana-time-zone/releases/tag/0.1.0
