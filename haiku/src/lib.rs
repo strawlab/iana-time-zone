@@ -30,6 +30,16 @@ mod ffi {
     }
 }
 
+/// Get the current IANA time zone as a string.
+///
+/// On Haiku platforms this function will return [`Some`] with the timezone string
+/// or [`None`] if an error occurs. On all other platforms, [`None`] is returned.
+///
+/// # Examples
+///
+/// ```
+/// let timezone = iana_time_zone_haiku::get_timezone();
+/// ```
 pub fn get_timezone() -> Option<String> {
     // The longest name in the IANA time zone database is 25 ASCII characters long.
     let mut buf = [0u8; 32];
