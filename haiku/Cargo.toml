@@ -5,6 +5,8 @@ version = "0.1.1"
 authors = ["René Kijewski <crates.io@k6i.de>"]
 repository = "https://github.com/strawlab/iana-time-zone"
 license = "MIT OR Apache-2.0"
+keywords = ["IANA", "time"]
+categories = ["date-and-time", "internationalization", "os"]
 readme = "README.md"
 edition = "2018"
 
