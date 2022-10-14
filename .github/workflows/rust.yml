@@ -286,3 +286,71 @@ jobs:
 
       - name: Lint and check formatting with clang-format
         run: npx github:artichoke/clang-format --check
+
+  test-haiku:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [ubuntu-20.04, windows-2022, macos-12]
+        toolchain:
+          - stable
+          - nightly
+        versions:
+          - ""
+          - "-Zminimal-versions"
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      RUSTFLAGS: -D warnings
+      RUST_BACKTRACE: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        working-directory: haiku
+        env:
+          RUSTC_BOOTSTRAP: 1
+      - run: cargo test --all-targets
+        working-directory: haiku
+
+  check-haiku:
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - stable
+          - nightly
+        versions:
+          - ""
+          - "-Zminimal-versions"
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -D warnings
+      RUST_BACKTRACE: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+          components: clippy
+      - name: Update lockfile
+        run: cargo generate-lockfile ${{ matrix.versions }}
+        working-directory: haiku
+        env:
+          RUSTC_BOOTSTRAP: 1
+      - run: cargo check --all-targets
+        working-directory: haiku
+      - run: cargo clippy --all-targets
+        working-directory: haiku
