@@ -294,10 +294,8 @@ jobs:
         runs-on: [ubuntu-20.04, windows-2022, macos-12]
         toolchain:
           - stable
-          - nightly
         versions:
           - ""
-          - "-Zminimal-versions"
     runs-on: ${{ matrix.runs-on }}
     env:
       RUSTFLAGS: -D warnings
@@ -326,10 +324,8 @@ jobs:
       matrix:
         toolchain:
           - stable
-          - nightly
         versions:
           - ""
-          - "-Zminimal-versions"
     runs-on: ubuntu-latest
     env:
       RUSTFLAGS: -D warnings
