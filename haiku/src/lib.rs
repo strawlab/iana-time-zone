@@ -1,3 +1,16 @@
+#![warn(clippy::all)]
+#![warn(clippy::cargo)]
+#![warn(clippy::undocumented_unsafe_blocks)]
+#![allow(unknown_lints)]
+#![warn(missing_copy_implementations)]
+#![warn(missing_debug_implementations)]
+#![warn(missing_docs)]
+#![warn(rust_2018_idioms)]
+#![warn(trivial_casts, trivial_numeric_casts)]
+#![warn(unsafe_op_in_unsafe_fn)]
+#![warn(unused_qualifications)]
+#![warn(variant_size_differences)]
+
 /// # iana-time-zone-haiku
 ///
 /// [![Crates.io](https://img.shields.io/crates/v/iana-time-zone-haiku.svg)](https://crates.io/crates/iana-time-zone-haiku)
