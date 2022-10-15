@@ -1,4 +1,3 @@
-use std::ffi::CStr;
 use std::sync::Once;
 
 use android_system_properties::AndroidSystemProperties;
