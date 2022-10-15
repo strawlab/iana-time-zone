@@ -10,7 +10,8 @@
 #include <String.h>
 #include <TimeZone.h>
 
-size_t ::iana_time_zone_haiku::get_tz(rust::Slice<uint8_t> buf) {
+namespace iana_time_zone_haiku {
+size_t get_tz(rust::Slice<uint8_t> buf) {
     try {
         static_assert(sizeof(char) == sizeof(uint8_t), "Illegal char size");
 
@@ -54,9 +55,12 @@ size_t ::iana_time_zone_haiku::get_tz(rust::Slice<uint8_t> buf) {
         return 0;
     }
 }
+}  // namespace iana_time_zone_haiku
 
 #else
 
-size_t ::iana_time_zone_haiku::get_tz(rust::Slice<uint8_t>) { return 0; }
+namespace iana_time_zone_haiku {
+size_t get_tz(rust::Slice<uint8_t>) { return 0; }
+}  // namespace iana_time_zone_haiku
 
 #endif
