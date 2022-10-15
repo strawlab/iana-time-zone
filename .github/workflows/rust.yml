@@ -195,6 +195,9 @@ jobs:
           - ""
           - "-Zminimal-versions"
     runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -D warnings
+      RUST_BACKTRACE: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -211,7 +214,7 @@ jobs:
         env:
           RUSTC_BOOTSTRAP: 1
       - run: cargo check --all-targets
-      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo clippy --all-targets
 
   no-docker-image-check-only:
     runs-on: ubuntu-latest
