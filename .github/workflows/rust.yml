@@ -27,6 +27,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: maxim-lobanov/setup-xcode@v1
+        if: matrix.runs-on == 'macos-12' && matrix.toolchain == '1.38'
+        with:
+          xcode-version: "13.4.1"
       - name: Install Rust
         id: actions-rs
         uses: actions-rs/toolchain@v1
