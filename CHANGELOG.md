@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.52] - 2022-10-28
+### Fixed
+- fix for NixOS ([#81](https://github.com/strawlab/iana-time-zone/pull/81))
+
+### Changed
+- allow building the haiku crate on other hosts([#75](https://github.com/strawlab/iana-time-zone/pull/75))
+- various improvements in continuous integration and source quality
+  ([#76](https://github.com/strawlab/iana-time-zone/pull/76)),
+  ([#77](https://github.com/strawlab/iana-time-zone/pull/77)),
+  ([#78](https://github.com/strawlab/iana-time-zone/pull/78)),
+  ([#81](https://github.com/strawlab/iana-time-zone/pull/81))
+
 ## [0.1.51] - 2022-10-08
 ### Changed
 - bump MSRV to 1.38 ([#70](https://github.com/strawlab/iana-time-zone/pull/70))
@@ -219,6 +231,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implement for Linux, Windows, MacOS
 
+[0.1.52]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.52
 [0.1.51]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.51
 [0.1.50]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.50
 [0.1.49]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.49
