@@ -27,6 +27,8 @@ fn etc_localtime() -> Result<String, crate::GetTimezoneError> {
     const PREFIXES: &[&str] = &[
         "/usr/share/zoneinfo/",   // absolute path
         "../usr/share/zoneinfo/", // relative path
+        "/etc/zoneinfo/",         // absolute path for NixOS
+        "../etc/zoneinfo/",       // relative path for NixOS
     ];
     let mut s = read_link("/etc/localtime")?
         .into_os_string()
