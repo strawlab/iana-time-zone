@@ -358,3 +358,18 @@ jobs:
         working-directory: haiku
       - run: cargo clippy --all-targets
         working-directory: haiku
+
+  check-all-versions:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        id: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: which cargo-hack || cargo +stable install cargo-hack
+      - run: cargo hack check --version-range 1.36..
