@@ -126,10 +126,6 @@ jobs:
         versions:
           - ""
           - "-Zminimal-versions"
-        toolchain:
-          # There are no docker images for old versions.
-          - stable
-          - nightly
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -139,18 +135,14 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: ${{ matrix.toolchain }}
+          toolchain: stable
           override: true
           target: ${{ matrix.target }}
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
           RUSTC_BOOTSTRAP: 1
-      - run: which cross || cargo +stable install cross
-      # See https://github.com/strawlab/iana-time-zone/issues/80
-      # and https://github.com/rust-lang/rust/pull/85806
-      - run: echo '[build]' > Cross.toml && echo 'build-std = true' >> Cross.toml
-        if: matrix.toolchain == 'nightly'
+      - run: which cross || cargo install cross
       - run: cross build --target ${{ matrix.target }} --examples
 
   build-ios-cross:
@@ -160,7 +152,6 @@ jobs:
         toolchain:
           - "1.38"
           - stable
-          - nightly
         target:
           - aarch64-apple-ios-sim
           - aarch64-apple-ios
@@ -188,7 +179,7 @@ jobs:
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
           RUSTC_BOOTSTRAP: 1
-      - run: which cross || cargo +stable install cross
+      - run: which cross || cargo install cross
       - run: cross build --target ${{ matrix.target }} --examples
 
   check:
