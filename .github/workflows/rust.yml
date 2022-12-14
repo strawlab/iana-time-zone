@@ -17,7 +17,7 @@ jobs:
       matrix:
         runs-on: [ubuntu-20.04, windows-2022, macos-12]
         toolchain:
-          - "1.38"
+          - "1.48"
           - stable
           - nightly
         versions:
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: maxim-lobanov/setup-xcode@v1
-        if: matrix.runs-on == 'macos-12' && matrix.toolchain == '1.38'
+        if: matrix.runs-on == 'macos-12' && matrix.toolchain == '1.48'
         with:
           xcode-version: "13.4.1"
       - name: Install Rust
@@ -58,7 +58,7 @@ jobs:
         include:
           # Without `-Zminimal-versions` a too recent bumpalo version is selected. Newer versions use `edition = "2021"`.
           - versions: "-Zminimal-versions"
-          - toolchain: "1.38"
+          - toolchain: "1.48"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -150,7 +150,7 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - "1.38"
+          - "1.48"
           - stable
         target:
           - aarch64-apple-ios-sim
@@ -162,7 +162,7 @@ jobs:
         exclude:
           # Support for this target was added quite recently.
           - target: aarch64-apple-ios-sim
-          - toolchain: "1.38"
+          - toolchain: "1.48"
     runs-on: macos-12
     steps:
       - name: Checkout
@@ -187,7 +187,7 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - "1.38"
+          - "1.48"
           - stable
           - nightly
         versions:
