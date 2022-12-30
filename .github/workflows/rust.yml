@@ -142,7 +142,8 @@ jobs:
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
           RUSTC_BOOTSTRAP: 1
-      - run: which cross || cargo install cross
+      - name: Install "cross"
+        run: curl --location --silent --show-error --fail https://github.com/cargo-bins/cargo-quickinstall/releases/download/cross-0.2.4-x86_64-unknown-linux-gnu/cross-0.2.4-x86_64-unknown-linux-gnu.tar.gz | tar -xzvvf - -C $HOME/.cargo/bin
       - run: cross build --target ${{ matrix.target }} --examples
 
   build-ios-cross:
@@ -179,7 +180,8 @@ jobs:
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
           RUSTC_BOOTSTRAP: 1
-      - run: which cross || cargo install cross
+      - name: Install "cross"
+        run: curl --location --silent --show-error --fail https://github.com/cargo-bins/cargo-quickinstall/releases/download/cross-0.2.4-x86_64-apple-darwin/cross-0.2.4-x86_64-apple-darwin.tar.gz | tar -xzvvf - -C $HOME/.cargo/bin
       - run: cross build --target ${{ matrix.target }} --examples
 
   check:
