@@ -32,6 +32,8 @@
 
 #[allow(dead_code)]
 mod ffi_utils;
+#[cfg(target_os = "windows")]
+mod windows;
 
 #[cfg_attr(target_os = "linux", path = "tz_linux.rs")]
 #[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
