@@ -2,7 +2,7 @@ use std::ptr::null_mut;
 
 use super::tz_on_calendar::TzOnCalendar;
 use super::winapi::windows_delete_string;
-use super::HRESULT;
+use super::{E_FAIL, HRESULT};
 
 #[repr(C)]
 pub struct HstringHeader {
@@ -20,12 +20,13 @@ impl<'a> Hstring {
     pub fn from_tz_on_calendar(instance: &'a TzOnCalendar) -> Result<Self, HRESULT> {
         let mut string = null_mut();
         // SAFETY: A `TzOnCalendar` is only ever created with a valid instance.
-        let result = unsafe {
+        unsafe {
             let instance = instance.as_ptr();
-            ((**instance).GetTimeZone)(instance, &mut string)
-        };
-        if result < 0 || string.is_null() {
-            return Err(result);
+            ((**instance).GetTimeZone)(instance, &mut string).into_result()?;
+        }
+        // `string` can only be null for an empty result.
+        if string.is_null() {
+            return Err(E_FAIL);
         }
 
         Ok(Self(string))

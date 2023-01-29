@@ -20,15 +20,31 @@ pub struct GUID {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-pub type HRESULT = i32;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+#[must_use]
+pub struct HRESULT(i32);
 
-const CO_E_NOTINITIALIZED: HRESULT = -2147221008;
+// See <https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/705fb797-2175-4a90-b5a3-3918024b10b8>
+const CO_E_NOTINITIALIZED: HRESULT = HRESULT(0x800401F0_u32 as i32);
+const E_FAIL: HRESULT = HRESULT(0x80004005_u32 as i32);
 
 const CLASS_NAME: Hstring = hstring::h!("Windows.Globalization.Calendar");
 
 impl From<HRESULT> for crate::GetTimezoneError {
     fn from(orig: HRESULT) -> Self {
-        std::io::Error::from_raw_os_error(orig).into()
+        std::io::Error::from_raw_os_error(orig.0).into()
+    }
+}
+
+impl HRESULT {
+    pub fn into_result(self) -> Result<(), HRESULT> {
+        // per <https://learn.microsoft.com/en-us/windows/win32/api/winerror/nf-winerror-succeeded>
+        if self.0 < 0 {
+            return Err(self);
+        }
+
+        Ok(())
     }
 }
 
@@ -42,12 +58,9 @@ pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
             return Err(result);
         }
 
-        // No need to check the error. The only conceivable error code this function returns is
-        // E_OUTOFMEMORY, and the program is about to get OOM killed anyway in this case.
-        // Windows-rs does not check the result, either.
         // SAFETY: Using the function in `fn main()` is totally fine. If you go really low level
         //         and implement an "fn wWinMain()" somehow, then all bets are off anyway.
-        let _ = unsafe { co_increment_mta_usage(&mut 0) };
+        unsafe { co_increment_mta_usage(&mut 0)? };
 
         Inspectable::activate(&CLASS_NAME)
     })?;

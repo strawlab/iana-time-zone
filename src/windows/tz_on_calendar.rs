@@ -2,7 +2,7 @@ use std::ptr::null_mut;
 
 use super::inspectable::Inspectable;
 use super::interfaces::ITimeZoneOnCalendar;
-use super::{GUID, HRESULT};
+use super::{E_FAIL, GUID, HRESULT};
 
 const TIMEZONE_ON_CALENDAR_GUID: GUID = GUID {
     data1: 0xbb3c25e5,
@@ -17,16 +17,17 @@ impl TzOnCalendar {
     pub fn query(source: &Inspectable) -> Result<Self, HRESULT> {
         let mut result = null_mut();
         // SAFETY: An `Instance` is only ever created with a valid `IUnknown`.
-        let hr = unsafe {
+        unsafe {
             let source = source.as_ptr();
             ((**source).QueryInterface)(source.cast(), &TIMEZONE_ON_CALENDAR_GUID, &mut result)
+                .into_result()?;
         };
         // Per contract, `result` cannot be null, but better safe than sorry.
-        if hr >= 0 && !result.is_null() {
-            Ok(Self(result.cast()))
-        } else {
-            Err(hr)
+        if result.is_null() {
+            return Err(E_FAIL);
         }
+
+        Ok(Self(result.cast()))
     }
 
     /// SAFETY: You are not allowed to release the returned pointer.
