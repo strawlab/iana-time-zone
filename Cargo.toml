@@ -25,10 +25,7 @@ android_system_properties = "0.1.5"
 core-foundation-sys = "0.8.3"
 
 [target.'cfg(target_os = "windows")'.dependencies]
-windows = "0.7"
-
-[target.'cfg(target_os = "windows")'.build-dependencies]
-windows = "0.7"
+windows = {git="https://github.com/microsoft/windows-rs", rev="ad0da0107ee42700deb85a6c37c4e0c60de6b97a", features=["Globalization"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 js-sys = "0.3.50"

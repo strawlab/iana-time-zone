@@ -1,11 +1,7 @@
-mod bindings {
-    ::windows::include_bindings!();
-}
+use windows::Globalization::Calendar;
 
-use bindings::Windows::Globalization::Calendar;
-
-impl From<windows::Error> for crate::GetTimezoneError {
-    fn from(_orig: windows::Error) -> Self {
+impl From<windows::core::Error> for crate::GetTimezoneError {
+    fn from(_orig: windows::core::Error) -> Self {
         crate::GetTimezoneError::OsError
     }
 }
