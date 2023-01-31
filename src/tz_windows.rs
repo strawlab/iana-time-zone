@@ -1,8 +1,8 @@
 use windows::Globalization::Calendar;
 
 impl From<windows::core::Error> for crate::GetTimezoneError {
-    fn from(_orig: windows::core::Error) -> Self {
-        crate::GetTimezoneError::OsError
+    fn from(orig: windows::core::Error) -> Self {
+        crate::GetTimezoneError::IoError(std::io::Error::new(std::io::ErrorKind::Other, orig))
     }
 }
 
