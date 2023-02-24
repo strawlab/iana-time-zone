@@ -95,7 +95,7 @@ impl From<std::io::Error> for GetTimezoneError {
 
 /// Get the current IANA time zone as a string.
 ///
-/// See the module-level documentatation for a usage example and more details
+/// See the module-level documentation for a usage example and more details
 /// about this function.
 #[inline]
 pub fn get_timezone() -> Result<String, GetTimezoneError> {
