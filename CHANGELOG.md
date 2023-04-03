@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.56] - 2023-04-03
+### Changed
+- update `windows` dependency ([#102](https://github.com/strawlab/iana-time-zone/pull/102))
+
 ## [0.1.55] - 2023-03-30
 ### Changed
-- update `windows` dependency ([#97](https://github.com/strawlab/iana-time-zone/pull/101))
+- update `windows` dependency ([#101](https://github.com/strawlab/iana-time-zone/pull/101))
 
 ## [0.1.54] - 2023-03-21
 ### Changed
@@ -244,6 +248,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implement for Linux, Windows, MacOS
 
+[0.1.56]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.56
 [0.1.55]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.55
 [0.1.54]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.54
 [0.1.53]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.53
