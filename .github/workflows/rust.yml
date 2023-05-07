@@ -32,12 +32,8 @@ jobs:
         with:
           xcode-version: "13.4.1"
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
@@ -64,13 +60,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-          target: wasm32-unknown-unknown
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-unknown
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
@@ -92,13 +83,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-          target: wasm32-unknown-unknown
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-unknown
       - name: Install Node
         uses: actions/setup-node@v3
         with:
@@ -128,13 +114,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          target: ${{ matrix.target }}
+        run: |
+          rustup toolchain install stable --profile minimal --no-self-update --target ${{ matrix.target }}
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
@@ -175,13 +156,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-          target: ${{ matrix.target }}
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target ${{ matrix.target }}
+          rustup default ${{ matrix.toolchain }}
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
@@ -209,13 +186,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-          components: clippy
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --component clippy
+          rustup default ${{ matrix.toolchain }}
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
@@ -229,13 +202,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          override: true
-          components: rust-src
+        run: |
+          rustup toolchain install nightly --profile minimal --no-self-update --component rust-src
       - run: cargo +nightly check --target x86_64-unknown-haiku -Z build-std --examples
 
   doc:
@@ -244,12 +212,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          override: true
+        run: |
+          rustup toolchain install nightly --profile minimal --no-self-update
+          rustup default nightly
       - run: RUSTDOCFLAGS="-D warnings" cargo doc --all-features
 
   audit:
@@ -268,13 +233,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          target: x86_64-fortanix-unknown-sgx
-          override: true
+        run: |
+          rustup toolchain install stable --profile minimal --no-self-update --target x86_64-fortanix-unknown-sgx
       # Should fail (outcome is negated):
       - run: if cargo build --lib --target x86_64-fortanix-unknown-sgx; then exit 1; fi
       # Should succeed:
@@ -315,12 +275,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target x86_64-fortanix-unknown-sgx
+          rustup default ${{ matrix.toolchain }}
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         working-directory: haiku
@@ -345,13 +302,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-          components: clippy
+        run: |
+            rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --component clippy
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         working-directory: haiku
@@ -368,11 +320,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Rust
-        id: actions-rs
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+        run: |
+          rustup toolchain install stable --profile minimal --no-self-update
       - run: which cargo-hack || cargo +stable install cargo-hack
       - run: cargo hack check --version-range 1.36..
