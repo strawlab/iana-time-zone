@@ -1,4 +1,4 @@
-pub fn get_timezone_inner() -> std::result::Result<String, crate::GetTimezoneError> {
+pub fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     Err(crate::GetTimezoneError::OsError)
 }
 
