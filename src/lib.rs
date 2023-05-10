@@ -34,10 +34,23 @@
 mod ffi_utils;
 
 #[cfg_attr(target_os = "linux", path = "tz_linux.rs")]
-#[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
-#[cfg_attr(any(target_os = "macos", target_os = "ios"), path = "tz_macos.rs")]
 #[cfg_attr(
-    all(target_arch = "wasm32", not(target_os = "wasi")),
+    all(feature = "platform-windows", target_os = "windows"),
+    path = "tz_windows.rs"
+)]
+#[cfg_attr(
+    all(
+        feature = "platform-apple",
+        any(target_os = "macos", target_os = "ios")
+    ),
+    path = "tz_macos.rs"
+)]
+#[cfg_attr(
+    all(
+        feature = "platform-wasm",
+        target_arch = "wasm32",
+        not(target_os = "wasi")
+    ),
     path = "tz_wasm32.rs"
 )]
 #[cfg_attr(
@@ -52,8 +65,14 @@ mod ffi_utils;
     any(target_os = "illumos", target_os = "solaris"),
     path = "tz_illumos.rs"
 )]
-#[cfg_attr(target_os = "android", path = "tz_android.rs")]
-#[cfg_attr(target_os = "haiku", path = "tz_haiku.rs")]
+#[cfg_attr(
+    all(feature = "platform-android", target_os = "android"),
+    path = "tz_android.rs"
+)]
+#[cfg_attr(
+    all(feature = "platform-haiku", target_os = "haiku"),
+    path = "tz_haiku.rs"
+)]
 mod platform;
 
 /// Error types
