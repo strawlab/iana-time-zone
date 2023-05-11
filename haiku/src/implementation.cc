@@ -1,5 +1,4 @@
-#include "iana-time-zone-haiku/src/interface.h"
-#include "iana-time-zone-haiku/src/lib.rs.h"
+#include <cstddef>
 
 #ifdef __HAIKU__
 
@@ -10,12 +9,13 @@
 #include <String.h>
 #include <TimeZone.h>
 
-namespace iana_time_zone_haiku {
-size_t get_tz(rust::Slice<uint8_t> buf) {
+extern "C" {
+
+size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) {
     try {
         static_assert(sizeof(char) == sizeof(uint8_t), "Illegal char size");
 
-        if (buf.empty()) {
+        if (buf_size == 0) {
             return 0;
         }
 
@@ -38,7 +38,7 @@ size_t get_tz(rust::Slice<uint8_t> buf) {
         }
 
         size_t length(ilength);
-        if (length > buf.size()) {
+        if (length > buf_size) {
             return 0;
         }
 
@@ -49,18 +49,19 @@ size_t get_tz(rust::Slice<uint8_t> buf) {
             return 0;
         }
 
-        std::memcpy(buf.data(), sname, length);
+        std::memcpy(buf, sname, length);
         return length;
     } catch (...) {
         return 0;
     }
 }
-}  // namespace iana_time_zone_haiku
+}  // extern "C"
 
 #else
 
-namespace iana_time_zone_haiku {
-size_t get_tz(rust::Slice<uint8_t>) { return 0; }
-}  // namespace iana_time_zone_haiku
+extern "C" {
+
+size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) { return 0; }
+}  // extern "C"
 
 #endif
