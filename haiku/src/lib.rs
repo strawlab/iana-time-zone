@@ -20,14 +20,10 @@
 //!
 //! [iana-time-zone](https://github.com/strawlab/iana-time-zone) support crate for Haiku OS.
 
-#[cxx::bridge(namespace = "iana_time_zone_haiku")]
-mod ffi {
-    // SAFETY: in here "unsafe" is simply part of the syntax
-    unsafe extern "C++" {
-        include!("iana-time-zone-haiku/src/interface.h");
+use std::os::raw::c_char;
 
-        fn get_tz(buf: &mut [u8]) -> usize;
-    }
+extern "C" {
+    fn iana_time_zone_haiku_get_tz(buf: *mut c_char, buf_size: usize) -> usize;
 }
 
 /// Get the current IANA time zone as a string.
@@ -40,10 +36,17 @@ mod ffi {
 /// ```
 /// let timezone = iana_time_zone_haiku::get_timezone();
 /// ```
+#[must_use]
 pub fn get_timezone() -> Option<String> {
     // The longest name in the IANA time zone database is 25 ASCII characters long.
     let mut buf = [0u8; 32];
-    let len = ffi::get_tz(&mut buf);
+    // SAFETY: a valid, aligned, non-NULL pointer and length are given which
+    // point to a single allocation.
+    let len = unsafe {
+        let buf_size = buf.len();
+        let buf_ptr = buf.as_mut_ptr().cast::<c_char>();
+        iana_time_zone_haiku_get_tz(buf_ptr, buf_size)
+    };
     // The name should not be empty, or excessively long.
     match buf.get(..len)? {
         b"" => None,

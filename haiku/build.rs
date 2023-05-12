@@ -1,7 +1,9 @@
 use std::env;
 
 fn main() {
-    cxx_build::bridge("src/lib.rs")
+    cc::Build::new()
+        .warnings(false)
+        .cpp(true)
         .file("src/implementation.cc")
         .flag_if_supported("-std=c++11")
         .compile("tz_haiku");
