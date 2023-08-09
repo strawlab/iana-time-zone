@@ -35,7 +35,7 @@ wasm-bindgen = "0.2.70"
 wasm-bindgen-test = "0.3"
 
 [target.'cfg(target_os = "haiku")'.dependencies]
-iana-time-zone-haiku = { version = "0.1.1", path = "haiku" }
+iana-time-zone-haiku = { version = "0.1.2", path = "haiku" }
 
 [workspace]
 members = [".", "haiku"]
