@@ -1,12 +1,12 @@
 [package]
 name = "iana-time-zone"
 description = "get the IANA time zone for the current system"
-version = "0.1.57"
+version = "0.1.58"
 authors = [
     "Andrew Straw <strawman@astraw.com>",
     "René Kijewski <rene.kijewski@fu-berlin.de>",
     "Ryan Lopopolo <rjl@hyperbo.la>",
-    ]
+]
 repository = "https://github.com/strawlab/iana-time-zone"
 license = "MIT OR Apache-2.0"
 keywords = ["IANA", "time"]

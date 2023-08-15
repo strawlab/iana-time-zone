@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.58] - unreleased
+### Changed
+- allow version range for `windows` dependency ([#112](https://github.com/strawlab/iana-time-zone/pull/112))
+
 ## [0.1.57] - 2023-06-07
 ### Changed
 - implement OpenWRT support ([#109](https://github.com/strawlab/iana-time-zone/pull/109))
@@ -252,6 +256,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implement for Linux, Windows, MacOS
 
+[0.1.58]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.58
+[0.1.57]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.57
 [0.1.56]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.56
 [0.1.55]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.55
 [0.1.54]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.54
