@@ -1,7 +1,11 @@
+#[path = "Windows.rs"]
+#[allow(missing_debug_implementations, clippy::undocumented_unsafe_blocks)]
+mod windows;
+
 use windows::Globalization::Calendar;
 
-impl From<windows::core::Error> for crate::GetTimezoneError {
-    fn from(orig: windows::core::Error) -> Self {
+impl From<windows_core::Error> for crate::GetTimezoneError {
+    fn from(orig: windows_core::Error) -> Self {
         crate::GetTimezoneError::IoError(std::io::Error::new(std::io::ErrorKind::Other, orig))
     }
 }
