@@ -120,17 +120,10 @@ jobs:
         env:
           RUSTC_BOOTSTRAP: 1
 
-        # The command is derived from `cargo-quickinstall`'s description:
-        # https://github.com/cargo-bins/cargo-quickinstall/blob/49f09436/README.md#use-in-ci-systems
-        #
-        # I.e. download the file into STDOUT, follow redirects, don't give status reports, except
-        # if there are HTTP errors, and in case of HTTP errors don't pipe out anything at all.
-        # Extract everything into Cargo's `cargo install` destination, which is in your $PATH already.
-        #
-        # Updated pre-compiled binaries can be found in <https://github.com/cargo-bins/cargo-quickinstall/releases>
-        # by searching for their project name.
       - name: Install "cross"
-        run: curl --location --silent --show-error --fail https://github.com/cargo-bins/cargo-quickinstall/releases/download/cross-0.2.5-x86_64-unknown-linux-gnu/cross-0.2.5-x86_64-unknown-linux-gnu.tar.gz | tar -xzvvf - -C $HOME/.cargo/bin
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cross
 
       - run: cross build --target ${{ matrix.target }} --examples
 
@@ -152,9 +145,10 @@ jobs:
           ndk-version: r25b
           local-cache: true
 
-        # See "build-cross" for an explanation
       - name: Install "cargo ndk"
-        run: curl --location --silent --show-error --fail https://github.com/cargo-bins/cargo-quickinstall/releases/download/cargo-ndk-3.2.1/cargo-ndk-3.2.1-x86_64-unknown-linux-gnu.tar.gz | tar -xzvvf - -C $HOME/.cargo/bin
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-ndk
 
       - name: Check
         run: cargo ndk check --lib
@@ -355,8 +349,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Install Rust
         run: |
-          rustup toolchain install stable --profile minimal --no-self-update
-      - run: which cargo-hack || cargo +stable install cargo-hack
+          rustup toolchain install nightly --profile minimal --no-self-update
+          rustup default nightly
+
+      - name: Install "cargo hack"
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack
+
       - run: cargo hack check --version-range 1.36..
