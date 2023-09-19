@@ -92,11 +92,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14
+      - name: Install "wasm-pack"
+        uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
       - name: Update lockfile
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
           RUSTC_BOOTSTRAP: 1
-      - run: which wasm-pack || cargo +stable install wasm-pack
       - run: wasm-pack test --node
 
   build-cross:
