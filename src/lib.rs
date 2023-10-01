@@ -33,7 +33,7 @@
 #[allow(dead_code)]
 mod ffi_utils;
 
-#[cfg_attr(target_os = "linux", path = "tz_linux.rs")]
+#[cfg_attr(any(target_os = "linux", target_os = "hurd"), path = "tz_linux.rs")]
 #[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
 #[cfg_attr(any(target_os = "macos", target_os = "ios"), path = "tz_macos.rs")]
 #[cfg_attr(
