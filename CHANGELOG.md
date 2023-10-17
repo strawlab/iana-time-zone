@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - use windows-core with embedded bindings via windows-bindgen ([#117](https://github.com/strawlab/iana-time-zone/pull/117))
 - implement GNU Hurd support ([#121](https://github.com/strawlab/iana-time-zone/pull/121))
+- implement AIX support ([#57](https://github.com/strawlab/iana-time-zone/pull/57))
 
 ## [0.1.57] - 2023-06-07
 ### Added
