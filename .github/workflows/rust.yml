@@ -23,6 +23,12 @@ jobs:
         versions:
           - ""
           - "-Zminimal-versions"
+        exclude:
+          # `windows-core >= 0.51` uses `edition = "2021"`, but users of the library can can use
+          # `windows-core == 0.50` to be rust 1.48 compatible.
+          - runs-on: windows-2022
+            toolchain: "1.48"
+            versions: ""
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout
