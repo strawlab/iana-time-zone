@@ -369,3 +369,15 @@ jobs:
           tool: cargo-hack
 
       - run: cargo hack check --version-range 1.36.. --version-step 2 --clean-per-version --clean-per-run
+
+  generate-windows-bindings:
+    name: Generate windows-core bindings with windows-bindgen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Clean
+        run: rm -rf src/Windows.rs
+      - name: Generate
+        run: cargo r --manifest-path=api_gen/Cargo.toml
+      - name: Diff generated Rust code
+        run: test -z "$(git status --porcelain)" || (echo "::error::Generated files are different, please regenerate with cargo run --manifest-path=api_gen/Cargo.toml!"; git status; false)
