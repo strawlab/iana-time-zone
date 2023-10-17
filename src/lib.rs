@@ -52,6 +52,7 @@ mod ffi_utils;
     any(target_os = "illumos", target_os = "solaris"),
     path = "tz_illumos.rs"
 )]
+#[cfg_attr(target_os = "aix", path = "tz_aix.rs")]
 #[cfg_attr(target_os = "android", path = "tz_android.rs")]
 #[cfg_attr(target_os = "haiku", path = "tz_haiku.rs")]
 mod platform;
