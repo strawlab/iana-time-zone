@@ -37,7 +37,7 @@ mod ffi_utils;
 #[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
 #[cfg_attr(any(target_os = "macos", target_os = "ios"), path = "tz_macos.rs")]
 #[cfg_attr(
-    all(target_arch = "wasm32", not(target_os = "wasi")),
+    all(target_arch = "wasm32", target_os = "unknown"),
     path = "tz_wasm32.rs"
 )]
 #[cfg_attr(
