@@ -3,7 +3,6 @@
 --filter
     Windows.Globalization.Calendar
 
-    # Dependencies of the above
     Windows.Foundation.Collections.IIterable
     Windows.Foundation.Collections.IIterator
     Windows.Foundation.Collections.IVectorView
