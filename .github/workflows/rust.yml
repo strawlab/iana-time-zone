@@ -235,8 +235,8 @@ jobs:
         run: cargo generate-lockfile ${{ matrix.versions }}
         env:
           RUSTC_BOOTSTRAP: 1
-      - run: cargo check --all-targets
-      - run: cargo clippy --all-targets
+      - run: cargo check --all-targets --workspace
+      - run: cargo clippy --all-targets --workspace -- -D warnings
 
   no-docker-image-check-only:
     runs-on: ubuntu-latest
@@ -355,7 +355,7 @@ jobs:
           RUSTC_BOOTSTRAP: 1
       - run: cargo check --all-targets
         working-directory: haiku
-      - run: cargo clippy --all-targets
+      - run: cargo clippy --all-targets -- -D warnings
         working-directory: haiku
 
   check-all-versions:
