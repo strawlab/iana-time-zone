@@ -95,9 +95,9 @@ jobs:
           rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-unknown
           rustup default ${{ matrix.toolchain }}
       - name: Install Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 20
       - name: Install "wasm-pack"
         uses: taiki-e/install-action@v2
         with:
@@ -291,10 +291,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Node.js runtime
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
-
+          node-version: 20
       - name: Install npm
         run: npm i -f -g npm@8.16.0
 
