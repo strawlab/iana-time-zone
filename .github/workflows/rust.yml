@@ -383,3 +383,9 @@ jobs:
         run: cargo r --manifest-path=api_gen/Cargo.toml
       - name: Diff generated Rust code
         run: test -z "$(git status --porcelain)" || (echo "::error::Generated files are different, please regenerate with cargo run --manifest-path=api_gen/Cargo.toml!"; git status; false)
+
+  typos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: crate-ci/typos@master
