@@ -80,9 +80,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        versions:
-          - ""
-          - "-Zminimal-versions"
         toolchain:
           - stable
           - nightly
@@ -102,10 +99,6 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: wasm-pack
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
-        env:
-          RUSTC_BOOTSTRAP: 1
       - run: wasm-pack test --node
 
   build-cross:
