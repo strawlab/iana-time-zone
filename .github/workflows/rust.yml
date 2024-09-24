@@ -80,9 +80,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        versions:
-          - ""
-          - "-Zminimal-versions"
         toolchain:
           - stable
           - nightly
@@ -102,10 +99,6 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: wasm-pack
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
-        env:
-          RUSTC_BOOTSTRAP: 1
       - run: wasm-pack test --node
 
   build-cross:
@@ -265,10 +258,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Audit
-        uses: rustsec/audit-check@v1.4.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: EmbarkStudios/cargo-deny-action@v2
 
   fallback:
     runs-on: ubuntu-latest
@@ -386,3 +376,24 @@ jobs:
         run: cargo r --manifest-path=api_gen/Cargo.toml
       - name: Diff generated Rust code
         run: test -z "$(git status --porcelain)" || (echo "::error::Generated files are different, please regenerate with cargo run --manifest-path=api_gen/Cargo.toml!"; git status; false)
+
+  typos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: crate-ci/typos@master
+
+  devskim:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run DevSkim scanner
+        uses: microsoft/DevSkim-Action@v1
+      - name: Upload DevSkim scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: devskim-results.sarif
