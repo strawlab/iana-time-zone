@@ -20,17 +20,20 @@ jobs:
       matrix:
         runs-on: [ubuntu-22.04, windows-2022, macos-13]
         toolchain:
-          - "1.62"
+          - 1.62
           - stable
           - nightly
         versions:
           - ""
-          - "-Zminimal-versions"
+          - -Zminimal-versions
         exclude:
           # package `regex v1.11.1` cannot be built because it requires rustc
           # 1.65 or newer, while the currently active rustc version is 1.62.0
-          - toolchain: "1.62"
+          - toolchain: 1.62
             versions: ""
+          # Older proc-macro2 crates fail to compile on the latest nightly
+          - toolchain: nightly
+            versions: -Zminimal-versions
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout
