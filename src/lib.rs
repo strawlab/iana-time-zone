@@ -35,7 +35,7 @@ mod ffi_utils;
 
 #[cfg_attr(any(target_os = "linux", target_os = "hurd"), path = "tz_linux.rs")]
 #[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
-#[cfg_attr(any(target_os = "macos", target_os = "ios"), path = "tz_macos.rs")]
+#[cfg_attr(target_vendor = "apple", path = "tz_darwin.rs")]
 #[cfg_attr(
     all(target_arch = "wasm32", target_os = "unknown"),
     path = "tz_wasm32_unknown.rs"
@@ -55,7 +55,7 @@ mod ffi_utils;
 #[cfg_attr(target_os = "aix", path = "tz_aix.rs")]
 #[cfg_attr(target_os = "android", path = "tz_android.rs")]
 #[cfg_attr(target_os = "haiku", path = "tz_haiku.rs")]
-mod platform;
+mod tz_darwin;
 
 /// Error types
 #[derive(Debug)]
@@ -100,7 +100,7 @@ impl From<std::io::Error> for GetTimezoneError {
 /// about this function.
 #[inline]
 pub fn get_timezone() -> Result<String, GetTimezoneError> {
-    platform::get_timezone_inner()
+    tz_darwin::get_timezone_inner()
 }
 
 #[cfg(test)]
