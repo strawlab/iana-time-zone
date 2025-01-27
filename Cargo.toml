@@ -22,7 +22,13 @@ fallback = []
 android_system_properties = "0.1.5"
 
 [target.'cfg(target_vendor = "apple")'.dependencies]
-core-foundation-sys = "0.8.3"
+objc2-core-foundation = { version = "0.3.0", default-features = false, features = [
+    "std",
+    "CFBase",
+    "CFDate",
+    "CFString",
+    "CFTimeZone",
+] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows-core = { version = ">=0.50, <=0.52" }
