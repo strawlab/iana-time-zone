@@ -74,7 +74,7 @@ mod system_time_zone {
 mod string_ref {
     //! create safe wrapper around `CFStringRef`
 
-    use std::convert::TryInto;
+    use core::convert::TryInto;
 
     use core_foundation_sys::base::{Boolean, CFRange};
     use core_foundation_sys::string::{
@@ -100,7 +100,10 @@ mod string_ref {
             // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
             let v = unsafe { CFStringGetCStringPtr(self.string, kCFStringEncodingUTF8) };
             if !v.is_null() {
-                // SAFETY: `CFStringGetCStringPtr()` returns NUL-terminated strings.
+                // SAFETY: `CFStringGetCStringPtr()` returns NUL-terminated
+                // strings and will return NULL if the internal representation
+                // of the `CFString`` is not compatible with the requested
+                // encoding.
                 let v = unsafe { std::ffi::CStr::from_ptr(v) };
                 if let Ok(v) = v.to_str() {
                     return Some(v);
@@ -119,8 +122,8 @@ mod string_ref {
                 length,
             };
 
+            // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
             let converted_bytes = unsafe {
-                // SAFETY: `StringRef` is only ever created with a valid `CFStringRef`.
                 CFStringGetBytes(
                     self.string,
                     range,
