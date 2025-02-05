@@ -1,6 +1,17 @@
 use std::fs::{read_link, read_to_string};
 
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
+    if let Some(tz) = std::env::var_os("TZ") {
+        match tz.into_string() {
+            Ok(mut tz) => {
+                if tz.starts_with(":") {
+                    return Ok(tz.split_off(1));
+                }
+            }
+            Err(_) => { /* not UTF-8, ignore TZ env var */ }
+        }
+    }
+
     etc_localtime()
         .or_else(|_| etc_timezone())
         .or_else(|_| openwrt::etc_config_system())
