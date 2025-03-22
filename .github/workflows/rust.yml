@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-20.04, windows-2022, macos-12]
+        runs-on: [ubuntu-22.04, windows-2022, macos-13]
         toolchain:
           - "1.48"
           - stable
@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - uses: maxim-lobanov/setup-xcode@v1
-        if: matrix.runs-on == 'macos-12' && matrix.toolchain == '1.48'
+        if: matrix.runs-on == 'macos-13' && matrix.toolchain == '1.48'
         with:
           xcode-version: "13.4.1"
       - name: Install Rust
@@ -187,7 +187,7 @@ jobs:
           # Support for this target was added quite recently.
           - target: aarch64-apple-ios-sim
           - toolchain: "1.48"
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -295,7 +295,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-20.04, windows-2022, macos-12]
+        runs-on: [ubuntu-22.04, windows-2022, macos-13]
         toolchain:
           - stable
         versions:
@@ -349,7 +349,7 @@ jobs:
         working-directory: haiku
 
   check-all-versions:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
