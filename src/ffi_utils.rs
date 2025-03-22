@@ -1,5 +1,6 @@
 //! Cross platform FFI helpers.
 
+#[cfg(any(test, target_os = "android"))]
 use std::ffi::CStr;
 
 // The system property named 'persist.sys.timezone' contains the name of the
@@ -10,10 +11,15 @@ use std::ffi::CStr;
 // > The name of the current timezone is taken from the TZ environment variable,
 // > if defined. Otherwise, the system property named 'persist.sys.timezone' is
 // > checked instead.
+//
+// TODO: Use a `c"..."` literal when MSRV is upgraded beyond 1.77.0.
+// https://doc.rust-lang.org/edition-guide/rust-2021/c-string-literals.html
+#[cfg(any(test, target_os = "android"))]
 const ANDROID_TIMEZONE_PROPERTY_NAME: &[u8] = b"persist.sys.timezone\0";
 
 /// Return a [`CStr`] to access the timezone from an Android system properties
 /// environment.
+#[cfg(any(test, target_os = "android"))]
 pub(crate) fn android_timezone_property_name() -> &'static CStr {
     // In tests or debug mode, opt into extra runtime checks.
     if cfg!(any(test, debug_assertions)) {
