@@ -37,6 +37,9 @@ wasm-bindgen-test = "0.3"
 [target.'cfg(target_os = "haiku")'.dependencies]
 iana-time-zone-haiku = { version = "0.1.1", path = "haiku" }
 
+[dev-dependencies]
+chrono-tz = "0.10.1"
+
 [workspace]
 members = [".", "haiku"]
 default-members = ["."]

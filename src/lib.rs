@@ -25,9 +25,10 @@
 //! The resulting string can be parsed to a
 //! [`chrono-tz::Tz`](https://docs.rs/chrono-tz/latest/chrono_tz/enum.Tz.html)
 //! variant like this:
-//! ```ignore
+//! ```rust
 //! let tz_str = iana_time_zone::get_timezone()?;
 //! let tz: chrono_tz::Tz = tz_str.parse()?;
+//! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 
 #[allow(dead_code)]
