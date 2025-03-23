@@ -90,7 +90,7 @@ mod string_ref {
     }
 
     impl<'a, T> StringRef<'a, T> {
-        // SAFETY: `StringRef` must be valid pointer
+        // SAFETY: `string` must be valid pointer
         pub(crate) unsafe fn new(string: CFStringRef, _parent: &'a T) -> Self {
             Self { string, _parent }
         }
