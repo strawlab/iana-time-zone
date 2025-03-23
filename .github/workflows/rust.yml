@@ -178,6 +178,11 @@ jobs:
         versions:
           - ""
           - "-Zminimal-versions"
+        exclude:
+          # package `regex v1.11.1` cannot be built because it requires rustc
+          # 1.65 or newer, while the currently active rustc version is 1.61.0
+          - toolchain: "1.61"
+            versions: ""
     runs-on: macos-13
     steps:
       - name: Checkout
