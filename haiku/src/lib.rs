@@ -38,8 +38,8 @@ extern "C" {
 /// ```
 #[must_use]
 pub fn get_timezone() -> Option<String> {
-    // The longest name in the IANA time zone database is 25 ASCII characters long.
-    let mut buf = [0u8; 32];
+    // The longest name in the IANA time zone database is 32 ASCII characters long.
+    let mut buf = [0u8; 64];
     // SAFETY: a valid, aligned, non-NULL pointer and length are given which
     // point to a single allocation.
     let len = unsafe {
