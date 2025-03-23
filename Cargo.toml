@@ -13,6 +13,7 @@ keywords = ["IANA", "time"]
 categories = ["date-and-time", "internationalization", "os"]
 readme = "README.md"
 edition = "2018"
+rust-version = "1.61.0"
 
 [features]
 # When enabled, the library will succeed to compile for unknown target platforms, and return an `Err(GetTimezoneError::OsError)` at runtime.
