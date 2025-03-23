@@ -34,7 +34,11 @@
 #[allow(dead_code)]
 mod ffi_utils;
 
-#[cfg_attr(any(target_os = "linux", target_os = "hurd"), path = "tz_linux.rs")]
+#[cfg_attr(
+    any(all(target_os = "linux", not(target_env = "ohos")), target_os = "hurd"),
+    path = "tz_linux.rs"
+)]
+#[cfg_attr(all(target_os = "linux", target_env = "ohos"), path = "tz_ohos.rs")]
 #[cfg_attr(target_os = "windows", path = "tz_windows.rs")]
 #[cfg_attr(target_vendor = "apple", path = "tz_darwin.rs")]
 #[cfg_attr(

@@ -4,7 +4,7 @@
 use std::ffi::CStr;
 
 /// A buffer to store the timezone name when calling the C API.
-#[cfg(any(test, target_vendor = "apple"))]
+#[cfg(any(test, target_vendor = "apple", target_env = "ohos"))]
 pub(crate) mod buffer {
     /// The longest name in the IANA time zone database is 32 ASCII characters long.
     pub const MAX_LEN: usize = 64;
