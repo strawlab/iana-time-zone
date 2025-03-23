@@ -5,7 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    branches: [ '**' ]
+    branches: ["**"]
   schedule:
     # At 23:25 on Thursday.
     - cron: "25 23 * * 4"
@@ -18,26 +18,21 @@ jobs:
       matrix:
         runs-on: [ubuntu-22.04, windows-2022, macos-13]
         toolchain:
-          - "1.48"
+          - "1.61"
           - stable
           - nightly
         versions:
           - ""
           - "-Zminimal-versions"
         exclude:
-          # `windows-core >= 0.51` uses `edition = "2021"`, but users of the library can can use
-          # `windows-core == 0.50` to be rust 1.48 compatible.
-          - runs-on: windows-2022
-            toolchain: "1.48"
+          # package `regex v1.11.1` cannot be built because it requires rustc
+          # 1.65 or newer, while the currently active rustc version is 1.61.0
+          - toolchain: "1.61"
             versions: ""
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: maxim-lobanov/setup-xcode@v1
-        if: matrix.runs-on == 'macos-13' && matrix.toolchain == '1.48'
-        with:
-          xcode-version: "13.4.1"
       - name: Install Rust
         run: |
           rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
@@ -62,7 +57,7 @@ jobs:
         include:
           # Without `-Zminimal-versions` a too recent bumpalo version is selected. Newer versions use `edition = "2021"`.
           - versions: "-Zminimal-versions"
-          - toolchain: "1.48"
+          - toolchain: "1.61"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -95,7 +90,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "lts/*"
       - name: Install "wasm-pack"
         uses: taiki-e/install-action@v2
         with:
@@ -176,7 +171,7 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - "1.48"
+          - "1.61"
           - stable
         target:
           - x86_64-apple-ios
@@ -184,9 +179,10 @@ jobs:
           - ""
           - "-Zminimal-versions"
         exclude:
-          # Support for this target was added quite recently.
-          - target: aarch64-apple-ios-sim
-          - toolchain: "1.48"
+          # package `regex v1.11.1` cannot be built because it requires rustc
+          # 1.65 or newer, while the currently active rustc version is 1.61.0
+          - toolchain: "1.61"
+            versions: ""
     runs-on: macos-13
     steps:
       - name: Checkout
@@ -208,12 +204,17 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - "1.48"
+          - "1.61"
           - stable
           - nightly
         versions:
           - ""
           - "-Zminimal-versions"
+        exclude:
+          # package `cc v1.2.17` cannot be built because it requires rustc 1.63
+          # or newer, while the currently active rustc version is 1.61.0
+          - toolchain: "1.61"
+            versions: ""
     runs-on: ubuntu-latest
     env:
       RUSTFLAGS: -D warnings
@@ -284,7 +285,7 @@ jobs:
       - name: Setup Node.js runtime
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "lts/*"
       - name: Install npm
         run: npm i -f -g npm@8.16.0
 
