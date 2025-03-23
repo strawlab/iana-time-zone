@@ -32,7 +32,9 @@ mod system_time_zone {
     //! create a safe wrapper around `CFTimeZoneRef`
 
     use core_foundation_sys::base::{CFRelease, CFTypeRef};
-    use core_foundation_sys::timezone::{CFTimeZoneCopySystem, CFTimeZoneGetName, CFTimeZoneRef};
+    use core_foundation_sys::timezone::{
+        CFTimeZoneCopySystem, CFTimeZoneGetName, CFTimeZoneRef, CFTimeZoneResetSystem,
+    };
 
     pub(crate) struct SystemTimeZone(CFTimeZoneRef);
 
@@ -44,9 +46,38 @@ mod system_time_zone {
     }
 
     impl SystemTimeZone {
+        /// Creates a new `SystemTimeZone` by querying the current Darwin system
+        /// timezone.
+        ///
+        /// This function implicitly calls `CFTimeZoneResetSystem` to invalidate
+        /// the cached timezone and ensure we always retrieve the current system
+        /// timezone.
+        ///
+        /// Due to CoreFoundation's internal caching mechanism, subsequent calls
+        /// to `CFTimeZoneCopySystem` do not reflect system timezone changes
+        /// made while the process is running. Thus, we explicitly call
+        /// `CFTimeZoneResetSystem` first to invalidate the cached value and
+        /// ensure we always retrieve the current system timezone.
         pub(crate) fn new() -> Option<Self> {
-            // SAFETY: No invariants to uphold. We'll release the pointer when we don't need it anymore.
-            let v: CFTimeZoneRef = unsafe { CFTimeZoneCopySystem() };
+            // SAFETY:
+            // - Both `CFTimeZoneResetSystem` and `CFTimeZoneCopySystem` are FFI
+            //   calls to macOS CoreFoundation.
+            // - `CFTimeZoneResetSystem` safely invalidates the cached timezone
+            //   without any external invariants.
+            // - The pointer returned by `CFTimeZoneCopySystem` is managed and
+            //   released properly within `Drop`.
+            let v: CFTimeZoneRef = unsafe {
+                // First, clear the potentially cached timezone. This call will
+                // take the global lock on the timezone data.
+                //
+                // See <https://github.com/strawlab/iana-time-zone/issues/145#issuecomment-2745934606>
+                // for context on why we reset the timezone here.
+                CFTimeZoneResetSystem();
+
+                // Fetch the current value. This will likely allocate. This call
+                // will again take the global lock on the timezone data.
+                CFTimeZoneCopySystem()
+            };
             if v.is_null() {
                 None
             } else {
@@ -54,10 +85,12 @@ mod system_time_zone {
             }
         }
 
-        /// Get the time zone name as a [super::string_ref::StringRef].
+        /// Get the time zone name as a [`StringRef`].
         ///
         /// The lifetime of the `StringRef` is bound to our lifetime. Mutable
         /// access is also prevented by taking a reference to `self`.
+        ///
+        /// [`StringRef`]: super::string_ref::StringRef
         pub(crate) fn name(&self) -> Option<super::string_ref::StringRef<'_, Self>> {
             // SAFETY: `SystemTimeZone` is only ever created with a valid `CFTimeZoneRef`.
             let string = unsafe { CFTimeZoneGetName(self.0) };
