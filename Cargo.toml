@@ -38,6 +38,7 @@ wasm-bindgen = "0.2.89"
 
 [target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dev-dependencies]
 wasm-bindgen-test = "0.3.46"
+getrandom = { version = "0.2.1", features = ["js"] }
 
 [target.'cfg(target_os = "haiku")'.dependencies]
 iana-time-zone-haiku = { version = "0.1.1", path = "haiku" }
