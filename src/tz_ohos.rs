@@ -1,6 +1,6 @@
 //! OpenHarmony doesn't have `/etc/localtime`, we have to use it's "Time Service" to get the timezone information:
 //!
-//! - [API Refence](https://gitee.com/openharmony/docs/blob/43726785b4033887cd1a838aaaca5e255897a71e/en/application-dev/reference/apis-basic-services-kit/_time_service.md#oh_timeservice_gettimezone)
+//! - [API Reference](https://gitee.com/openharmony/docs/blob/43726785b4033887cd1a838aaaca5e255897a71e/en/application-dev/reference/apis-basic-services-kit/_time_service.md#oh_timeservice_gettimezone)
 
 use crate::ffi_utils::buffer::{tzname_buf, MAX_LEN};
 use crate::GetTimezoneError;
