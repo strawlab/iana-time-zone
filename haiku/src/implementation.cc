@@ -15,7 +15,7 @@ size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) {
     try {
         static_assert(sizeof(char) == sizeof(uint8_t), "Illegal char size");
 
-        if (buf_size == 0) {
+        if (!buf || buf_size == 0) {
             return 0;
         }
 
@@ -32,24 +32,23 @@ size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) {
         }
 
         BString bname(tz.ID());
-        int32_t ilength(bname.Length());
-        if (ilength <= 0) {
+        auto raw_length = bname.Length();
+        if (raw_length <= 0) {
             return 0;
         }
 
-        size_t length(ilength);
+        size_t length = static_cast<size_t>(raw_length);
         if (length > buf_size) {
             return 0;
         }
 
-        // BString::String() returns a borrowed string.
-        // https://www.haiku-os.org/docs/api/classBString.html#ae4fe78b06c8e3310093b80305e14ba87
-        const char *sname(bname.String());
-        if (!sname) {
-            return 0;
+        bname.CopyInto(buf, 0, raw_length);
+
+        // Optionally, NUL-terminate the buffer if there's room:
+        if (length < buf_size) {
+            buf[length] = '\0';
         }
 
-        std::memcpy(buf, sname, length);
         return length;
     } catch (...) {
         return 0;
