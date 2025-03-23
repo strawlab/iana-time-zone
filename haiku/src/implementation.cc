@@ -11,11 +11,11 @@
 
 extern "C" {
 
-size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) {
+auto iana_time_zone_haiku_get_tz(char *buf, const std::size_t buf_size) -> std::size_t {
     try {
         static_assert(sizeof(char) == sizeof(uint8_t), "Illegal char size");
 
-        if (!buf || buf_size == 0) {
+        if (buf == nullptr || buf_size == 0) {
             return 0;
         }
 
@@ -26,18 +26,18 @@ size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) {
             return 0;
         }
 
-        BTimeZone tz(NULL, NULL);
-        if (locale_roster->GetDefaultTimeZone(&tz) != B_OK) {
+        BTimeZone timezone(nullptr, nullptr);
+        if (locale_roster->GetDefaultTimeZone(&timezone) != B_OK) {
             return 0;
         }
 
-        BString bname(tz.ID());
-        auto raw_length = bname.Length();
+        const BString bname = timezone.ID();
+        const auto raw_length = bname.Length();
         if (raw_length <= 0) {
             return 0;
         }
 
-        size_t length = static_cast<size_t>(raw_length);
+        const auto length = static_cast<std::size_t>(raw_length);
         if (length > buf_size) {
             return 0;
         }
@@ -54,13 +54,19 @@ size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) {
         return 0;
     }
 }
+
 }  // extern "C"
 
 #else
 
 extern "C" {
 
-size_t iana_time_zone_haiku_get_tz(char *buf, size_t buf_size) { return 0; }
+// NOLINTBEGIN(misc-unused-parameters)
+
+auto iana_time_zone_haiku_get_tz(char *buf, const std::size_t buf_size) -> std::size_t { return 0; }
+
+// NOLINTEND(misc-unused-parameters)
+
 }  // extern "C"
 
 #endif
