@@ -1,13 +1,12 @@
+use crate::ffi_utils::buffer::{tzname_buf, MAX_LEN};
+
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     get_timezone().ok_or(crate::GetTimezoneError::OsError)
 }
 
 #[inline]
 fn get_timezone() -> Option<String> {
-    // The longest name in the IANA time zone database is 25 ASCII characters long.
-    const MAX_LEN: usize = 32;
-    let mut buf = [0; MAX_LEN];
-
+    let mut buf = tzname_buf();
     // Get system time zone, and borrow its name.
     let tz = system_time_zone::SystemTimeZone::new()?;
     let name = tz.name()?;
@@ -20,9 +19,9 @@ fn get_timezone() -> Option<String> {
         name.to_utf8(&mut buf)?
     };
 
-    if name.is_empty() || name.len() >= MAX_LEN {
+    if name.is_empty() || name.len() > MAX_LEN {
         // The name should not be empty, or excessively long.
-        None
+        return None;
     } else {
         Some(name.to_owned())
     }
