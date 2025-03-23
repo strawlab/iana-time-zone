@@ -5,7 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    branches: [ '**' ]
+    branches: ["**"]
   schedule:
     # At 23:25 on Thursday.
     - cron: "25 23 * * 4"
@@ -24,6 +24,11 @@ jobs:
         versions:
           - ""
           - "-Zminimal-versions"
+        exclude:
+          # package `regex v1.11.1` cannot be built because it requires rustc
+          # 1.65 or newer, while the currently active rustc version is 1.61.0
+          - toolchain: "1.61"
+            versions: ""
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout
@@ -200,6 +205,11 @@ jobs:
         versions:
           - ""
           - "-Zminimal-versions"
+        exclude:
+          # package `cc v1.2.17` cannot be built because it requires rustc 1.63
+          # or newer, while the currently active rustc version is 1.61.0
+          - toolchain: "1.61"
+            versions: ""
     runs-on: ubuntu-latest
     env:
       RUSTFLAGS: -D warnings
