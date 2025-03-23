@@ -365,7 +365,7 @@ jobs:
         with:
           tool: cargo-hack
 
-      - run: cargo hack check --version-range 1.36.. --version-step 2 --clean-per-version --clean-per-run
+      - run: cargo hack check --version-range .. --version-step 2 --clean-per-version --clean-per-run
 
   generate-windows-bindings:
     name: Generate windows-core bindings with windows-bindgen
