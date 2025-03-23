@@ -104,8 +104,11 @@ jobs:
         target:
           - x86_64-unknown-freebsd
           - x86_64-unknown-illumos
-          - x86_64-unknown-netbsd
-          - sparcv9-sun-solaris
+          # # NetBSD disabled waiting for release with fix from
+          # # https://github.com/cross-rs/cross/issues/1345
+          # - x86_64-unknown-netbsd
+          # # Solaris disabled while https://github.com/cross-rs/cross/issues/1599 is open
+          # - sparcv9-sun-solaris
         versions:
           - ""
           - "-Zminimal-versions"
