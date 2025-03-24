@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Changed
-- bump msrv to 1.61 ([#157](https://github.com/strawlab/iana-time-zone/pull/157))
+- Bump MSRV (minimum supported rust version) to 1.61 ([#157](https://github.com/strawlab/iana-time-zone/pull/157))
+- Update to rust edition 2021 ([#161](https://github.com/strawlab/iana-time-zone/pull/161))
+- Address high and medium severity zizmor findings ([#163](https://github.com/strawlab/iana-time-zone/pull/163))
 
 ### Added
 - Added support for tvOS, watchOS and visionOS ([#146](https://github.com/strawlab/iana-time-zone/pull/146)).
