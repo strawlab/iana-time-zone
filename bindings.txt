@@ -1,4 +1,14 @@
 --out src/windows_bindings.rs
 
+--no-deps
+--link windows_targets
+--sys
+
 --filter
-    Windows.Globalization.Calendar
+    Windows.Win32.Globalization.GetUserDefaultGeoName
+    Windows.Win32.Globalization.ucal_getTimeZoneIDForWindowsID
+    Windows.Win32.System.SystemServices.TIME_ZONE_ID_DAYLIGHT
+    Windows.Win32.System.SystemServices.TIME_ZONE_ID_STANDARD
+    Windows.Win32.System.SystemServices.TIME_ZONE_ID_UNKNOWN
+    Windows.Win32.System.Time.GetDynamicTimeZoneInformation
+    Windows.Win32.System.Time.TIME_ZONE_ID_INVALID
