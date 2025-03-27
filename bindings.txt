@@ -1,4 +1,4 @@
 --out src/windows_bindings.rs
 
 --filter
-    Windows.Globalization.Calendar
+    Windows.Win32.System.Time.GetDynamicTimeZoneInformation
