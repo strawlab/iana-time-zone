@@ -1,4 +1,8 @@
 --out src/windows_bindings.rs
 
 --filter
+    Windows.Win32.System.SystemServices.TIME_ZONE_ID_DAYLIGHT
+    Windows.Win32.System.SystemServices.TIME_ZONE_ID_STANDARD
+    Windows.Win32.System.SystemServices.TIME_ZONE_ID_UNKNOWN
     Windows.Win32.System.Time.GetDynamicTimeZoneInformation
+    Windows.Win32.System.Time.TIME_ZONE_ID_INVALID
