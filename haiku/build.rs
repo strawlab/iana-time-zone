@@ -5,7 +5,7 @@ fn main() {
         .warnings(false)
         .cpp(true)
         .file("src/implementation.cc")
-        .flag_if_supported("-std=c++11")
+        .flag_if_supported("-std=c++17")
         .compile("tz_haiku");
 
     println!("cargo:rerun-if-changed=src/lib.rs");
