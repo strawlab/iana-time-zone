@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.63] - 2025-03-31
 ### Changes
 - Bump MSRV (minimum supported rust version) to 1.62 ([#131](https://github.com/strawlab/iana-time-zone/pull/131))
-- Bump `windows-core` to `0.56-0.61` range ([#131](https://github.com/strawlab/iana-time-zone/pull/131), [#133](https://github.com/strawlab/iana-time-zone/pull/133))
+- Removed `windows-core` dependency altogether ([#131](https://github.com/strawlab/iana-time-zone/pull/131), [#133](https://github.com/strawlab/iana-time-zone/pull/133), [#167](https://github.com/strawlab/iana-time-zone/pull/167))
 
 ## [0.1.62] - 2025-03-24
 ### Changed
