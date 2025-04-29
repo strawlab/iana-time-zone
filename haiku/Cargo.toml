@@ -1,7 +1,7 @@
 [package]
 name = "iana-time-zone-haiku"
 description = "iana-time-zone support crate for Haiku OS"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["René Kijewski <crates.io@k6i.de>"]
 repository = "https://github.com/strawlab/iana-time-zone"
 license = "MIT OR Apache-2.0"
