@@ -60,6 +60,7 @@ mod ffi_utils;
 #[cfg_attr(target_os = "aix", path = "tz_aix.rs")]
 #[cfg_attr(target_os = "android", path = "tz_android.rs")]
 #[cfg_attr(target_os = "haiku", path = "tz_haiku.rs")]
+#[cfg_attr(target_os = "vxworks", path = "tz_vxworks.rs")]
 mod platform;
 
 /// Error types
