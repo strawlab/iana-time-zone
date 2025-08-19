@@ -23,6 +23,7 @@
 use std::os::raw::c_char;
 
 extern "C" {
+    #[must_use]
     fn iana_time_zone_haiku_get_tz(buf: *mut c_char, buf_size: usize) -> usize;
 }
 
