@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.64] - 2025-09-12
 ### Changed
-- Bump maximum allowed windows-core version to 0.62 (from 0.61).
+- Bump `windows-core` to `0.56-0.62` range ([#177](https://github.com/strawlab/iana-time-zone/pull/177)
 
 ## [0.1.63] - 2025-03-31
 ### Changes
@@ -291,6 +291,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implement for Linux, Windows, MacOS
 
+[0.1.64]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.64
 [0.1.63]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.63
 [0.1.62]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.62
 [0.1.61]: https://github.com/strawlab/iana-time-zone/releases/tag/v0.1.61
