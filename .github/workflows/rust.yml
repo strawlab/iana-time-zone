@@ -99,7 +99,7 @@ jobs:
           rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-unknown
           rustup default ${{ matrix.toolchain }}
       - name: Install Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "lts/*"
       - name: Install "wasm-pack"
@@ -315,7 +315,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js runtime
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "lts/*"
       - name: Install npm
