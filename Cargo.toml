@@ -16,8 +16,12 @@ edition = "2021"
 rust-version = "1.62.0"
 
 [features]
+default = ["js"]
+
 # When enabled, the library will succeed to compile for unknown target platforms, and return an `Err(GetTimezoneError::OsError)` at runtime.
 fallback = []
+
+js = ["js-sys", "wasm-bindgen"]
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_system_properties = "0.1.5"
@@ -29,12 +33,12 @@ core-foundation-sys = "0.8.6"
 windows-core = ">=0.56, <=0.62"
 
 [target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
-js-sys = "0.3.66"
+js-sys = { version = "0.3.66", optional = true }
 # Set a minimum, but unused, dependency on `log` to ensure that cfg-if 1.0.0
 # gets pulled in in a minimal versions build for the indirect dependency from
 # `wasm-bindgen`.
 log = "0.4.14"
-wasm-bindgen = "0.2.89"
+wasm-bindgen = { version = "0.2.89", optional = true }
 
 [target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dev-dependencies]
 wasm-bindgen-test = "0.3.46"
