@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-22.04, windows-2022, macos-13]
+        runs-on: [ubuntu-22.04, windows-2022, macos-latest]
         toolchain:
           - "1.62"
           - stable
@@ -202,7 +202,7 @@ jobs:
           # 1.65 or newer, while the currently active rustc version is 1.62.0
           - toolchain: "1.62"
             versions: ""
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -329,7 +329,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-22.04, windows-2022, macos-13]
+        runs-on: [ubuntu-22.04, windows-2022, macos-latest]
         toolchain:
           - stable
         versions:
