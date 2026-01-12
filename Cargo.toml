@@ -44,7 +44,7 @@ getrandom = { version = "0.2.1", features = ["js"] }
 iana-time-zone-haiku = { version = "0.1.1", path = "haiku" }
 
 [target.'cfg(target_os = "emscripten")'.dependencies]
-libc = "0.2"
+emscripten-functions = "0.3"
 
 [dev-dependencies]
 chrono-tz = "0.10.1"
