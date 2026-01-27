@@ -108,6 +108,29 @@ jobs:
           tool: wasm-pack
       - run: wasm-pack test --node
 
+  test-emscripten:
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - stable
+          - nightly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-emscripten
+          rustup default ${{ matrix.toolchain }}
+      - uses: mymindstorm/setup-emsdk@v14
+      - env:
+          CARGO_TARGET_WASM32_UNKNOWN_EMSCRIPTEN_RUNNER: node
+          CARGO_BUILD_TARGET: wasm32-unknown-emscripten
+        run: cargo test
+
   build-cross:
     strategy:
       fail-fast: false
