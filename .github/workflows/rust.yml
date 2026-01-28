@@ -108,6 +108,31 @@ jobs:
           tool: wasm-pack
       - run: wasm-pack test --node
 
+  test-wasi:
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - stable
+          - nightly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-wasip1
+          rustup default ${{ matrix.toolchain }}
+      - env:
+          CARGO_BUILD_TARGET: wasm32-wasip1
+        run: cargo build --release --examples
+      - name: Install wasmtime
+        uses: bytecodealliance/actions/wasmtime/setup@6aecabac1eb1dcf7ed94ba9471974415ee2ebef2 # v1
+      - name: Run example using wasmtime
+        run: wasmtime ./target/wasm32-wasip1/release/examples/get_timezone.wasm
+
   test-emscripten:
     strategy:
       fail-fast: false
