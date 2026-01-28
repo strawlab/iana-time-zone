@@ -46,6 +46,10 @@ mod ffi_utils;
     path = "tz_wasm32_unknown.rs"
 )]
 #[cfg_attr(
+    all(target_arch = "wasm32", target_os = "emscripten"),
+    path = "tz_wasm32_emscripten.rs"
+)]
+#[cfg_attr(
     any(target_os = "freebsd", target_os = "dragonfly"),
     path = "tz_freebsd.rs"
 )]
