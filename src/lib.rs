@@ -64,6 +64,10 @@ mod ffi_utils;
 #[cfg_attr(target_os = "aix", path = "tz_aix.rs")]
 #[cfg_attr(target_os = "android", path = "tz_android.rs")]
 #[cfg_attr(target_os = "haiku", path = "tz_haiku.rs")]
+#[cfg_attr(
+    all(target_arch = "wasm32", target_os = "wasi"),
+    path = "tz_wasm32_wasi.rs"
+)]
 mod platform;
 
 /// Error types
