@@ -134,7 +134,7 @@ mod openwrt {
     ///  * a tuple `Some((word, remaining_line))` if found,
     ///  * `None` if the line is exhausted, or
     ///  * `Err(BrokenQuote)` if the line could not be parsed.
-    #[allow(clippy::manual_strip)] // needs to be compatile to 1.36
+    #[allow(clippy::manual_strip)] // needs to be compatible to 1.36
     fn read_word(s: &str) -> Result<Option<(&str, &str)>, BrokenQuote> {
         let s = s.trim_start();
         if s.is_empty() || s.starts_with('#') {
