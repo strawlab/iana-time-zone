@@ -4,6 +4,6 @@ pub fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
 
 #[cfg(not(feature = "fallback"))]
 compile_error!(
-    "iana-time-zone is currently implemented for Linux, Window, MacOS, FreeBSD, NetBSD, \
-    OpenBSD, Dragonfly, WebAssembly (browser), wasip, emscripten, iOS, Illumos, Android, AIX, Solaris and Haiku.",
+    "iana-time-zone is currently implemented for Linux, Windows, MacOS, FreeBSD, NetBSD, \
+    OpenBSD, DragonFlyBSD, WASM/WASI, Emscripten, iOS, Illumos, Android, AIX, Solaris and Haiku.",
 );
