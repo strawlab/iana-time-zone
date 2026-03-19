@@ -129,7 +129,7 @@ jobs:
           CARGO_BUILD_TARGET: wasm32-wasip1
         run: cargo build --release --examples
       - name: Install wasmtime
-        uses: bytecodealliance/actions/wasmtime/setup@6aecabac1eb1dcf7ed94ba9471974415ee2ebef2 # v1
+        uses: bytecodealliance/actions/wasmtime/setup@9152e710e9f7182e4c29ad218e4f335a7b203613 # v1
       - name: Run example using wasmtime
         run: wasmtime ./target/wasm32-wasip1/release/examples/get_timezone.wasm
 
