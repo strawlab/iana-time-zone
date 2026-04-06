@@ -150,7 +150,7 @@ jobs:
         run: |
           rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-emscripten
           rustup default ${{ matrix.toolchain }}
-      - uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
+      - uses: mymindstorm/setup-emsdk@667eb33f24e84e7f362c16d8d7fff0629a73e15e # v15
       - env:
           CARGO_TARGET_WASM32_UNKNOWN_EMSCRIPTEN_RUNNER: node
           CARGO_BUILD_TARGET: wasm32-unknown-emscripten
