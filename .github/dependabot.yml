@@ -4,8 +4,17 @@ updates:
     directory: "/"
     schedule:
       interval: daily
+    cooldown:
+      default-days: 7
+    ignore:
+      # The getrandom dev-dependency only raises the minimal-versions floor for
+      # rand_core's `getrandom ^0.2`; releases after 0.2 cannot satisfy it.
+      - dependency-name: getrandom
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
