@@ -22,12 +22,12 @@
 //! # Ok::<(), iana_time_zone::GetTimezoneError>(())
 //! ```
 //!
-//! The resulting string can be parsed to a
-//! [`chrono-tz::Tz`](https://docs.rs/chrono-tz/latest/chrono_tz/enum.Tz.html)
-//! variant like this:
+//! The resulting string names a time zone in the IANA time zone database, so
+//! it can be looked up with a time zone library such as
+//! [`jiff`](https://docs.rs/jiff/latest/jiff/tz/struct.TimeZone.html):
 //! ```rust
 //! let tz_str = iana_time_zone::get_timezone()?;
-//! let tz: chrono_tz::Tz = tz_str.parse()?;
+//! let tz = jiff::tz::TimeZone::get(&tz_str)?;
 //! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 
