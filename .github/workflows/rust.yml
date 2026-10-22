@@ -13,12 +13,21 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   test:
+    name: Test
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-22.04, windows-2022, macos-latest]
+        runs-on: [ubuntu-24.04, windows-2022, macos-latest]
         toolchain:
           - "1.62"
           - stable
@@ -37,21 +46,25 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update
-          rustup default ${{ matrix.toolchain }}
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update
+          rustup default "$TOOLCHAIN"
         env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
+      - name: Update lockfile
+        run: cargo generate-lockfile $VERSIONS
+        env:
+          VERSIONS: ${{ matrix.versions }}
           RUSTC_BOOTSTRAP: 1
       - run: cargo test --all-targets
       - run: cargo run --example stress-test
 
   build-wasm:
+    name: Build wasm32-unknown-unknown
     strategy:
       fail-fast: false
       matrix:
@@ -68,20 +81,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-unknown
-          rustup default ${{ matrix.toolchain }}
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --target wasm32-unknown-unknown
+          rustup default "$TOOLCHAIN"
         env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
+      - name: Update lockfile
+        run: cargo generate-lockfile $VERSIONS
+        env:
+          VERSIONS: ${{ matrix.versions }}
           RUSTC_BOOTSTRAP: 1
       - run: cargo build --lib
 
   test-wasm:
+    name: Test wasm32-unknown-unknown
     strategy:
       fail-fast: false
       matrix:
@@ -91,24 +108,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-unknown
-          rustup default ${{ matrix.toolchain }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --target wasm32-unknown-unknown
+          rustup default "$TOOLCHAIN"
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
       - name: Install Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "lts/*"
       - name: Install "wasm-pack"
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@a4d3f3f761dcd95cce1b72cb61cb6d1963438177 # v2.87.30
         with:
           tool: wasm-pack
       - run: wasm-pack test --node
 
   test-wasi:
+    name: Test wasm32-wasip1
     strategy:
       fail-fast: false
       matrix:
@@ -118,22 +138,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-wasip1
-          rustup default ${{ matrix.toolchain }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --target wasm32-wasip1
+          rustup default "$TOOLCHAIN"
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
       - env:
           CARGO_BUILD_TARGET: wasm32-wasip1
         run: cargo build --release --examples
       - name: Install wasmtime
-        uses: bytecodealliance/actions/wasmtime/setup@6aecabac1eb1dcf7ed94ba9471974415ee2ebef2 # v1
+        uses: bytecodealliance/actions/wasmtime/setup@9152e710e9f7182e4c29ad218e4f335a7b203613 # v1.1.3
       - name: Run example using wasmtime
         run: wasmtime ./target/wasm32-wasip1/release/examples/get_timezone.wasm
 
   test-emscripten:
+    name: Test wasm32-unknown-emscripten
     strategy:
       fail-fast: false
       matrix:
@@ -143,20 +166,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target wasm32-unknown-emscripten
-          rustup default ${{ matrix.toolchain }}
-      - uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --target wasm32-unknown-emscripten
+          rustup default "$TOOLCHAIN"
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
+      - uses: emscripten-core/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984 # v16
       - env:
           CARGO_TARGET_WASM32_UNKNOWN_EMSCRIPTEN_RUNNER: node
           CARGO_BUILD_TARGET: wasm32-unknown-emscripten
         run: cargo test
 
   build-cross:
+    name: Cross build
     strategy:
       fail-fast: false
       matrix:
@@ -175,29 +201,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install stable --profile minimal --no-self-update --target ${{ matrix.target }}
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
+          rustup toolchain install stable --profile minimal --no-self-update --target "$TARGET"
         env:
+          TARGET: ${{ matrix.target }}
+      - name: Update lockfile
+        run: cargo generate-lockfile $VERSIONS
+        env:
+          VERSIONS: ${{ matrix.versions }}
           RUSTC_BOOTSTRAP: 1
 
       - name: Install "cross"
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@a4d3f3f761dcd95cce1b72cb61cb6d1963438177 # v2.87.30
         with:
           tool: cross
 
-      - run: cross build --target ${{ matrix.target }} --examples
+      - run: cross build --target "$TARGET" --examples
+        env:
+          TARGET: ${{ matrix.target }}
 
   build-android:
+    name: Build Android
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
@@ -207,14 +239,14 @@ jobs:
       - name: Add Rust toolchain
         run: rustup target add aarch64-linux-android armv7-linux-androideabi
       - name: Setup Android NDK
-        uses: nttld/setup-ndk@v1
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779 # v1.6.0
         id: setup-ndk
         with:
           ndk-version: r25b
           local-cache: true
 
       - name: Install "cargo ndk"
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@a4d3f3f761dcd95cce1b72cb61cb6d1963438177 # v2.87.30
         with:
           tool: cargo-ndk
 
@@ -234,6 +266,7 @@ jobs:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
   build-ios-cross:
+    name: Cross build iOS
     strategy:
       fail-fast: false
       matrix:
@@ -253,22 +286,29 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target ${{ matrix.target }}
-          rustup default ${{ matrix.toolchain }}
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --target "$TARGET"
+          rustup default "$TOOLCHAIN"
         env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
+          TARGET: ${{ matrix.target }}
+      - name: Update lockfile
+        run: cargo generate-lockfile $VERSIONS
+        env:
+          VERSIONS: ${{ matrix.versions }}
           RUSTC_BOOTSTRAP: 1
       - name: Install "cross"
         run: curl --location --silent --show-error --fail https://github.com/cargo-bins/cargo-quickinstall/releases/download/cross-0.2.5/cross-0.2.5-x86_64-apple-darwin.tar.gz | tar -xzvvf - -C $HOME/.cargo/bin
-      - run: cross build --target ${{ matrix.target }} --examples
+      - run: cross build --target "$TARGET" --examples
+        env:
+          TARGET: ${{ matrix.target }}
 
   check:
+    name: Check and clippy
     strategy:
       fail-fast: false
       matrix:
@@ -290,25 +330,29 @@ jobs:
       RUST_BACKTRACE: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --component clippy
-          rustup default ${{ matrix.toolchain }}
-      - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --component clippy
+          rustup default "$TOOLCHAIN"
         env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
+      - name: Update lockfile
+        run: cargo generate-lockfile $VERSIONS
+        env:
+          VERSIONS: ${{ matrix.versions }}
           RUSTC_BOOTSTRAP: 1
       - run: cargo check --all-targets --workspace
       - run: cargo clippy --all-targets --workspace -- -D warnings
 
   no-docker-image-check-only:
+    name: Check Haiku with build-std
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
@@ -318,10 +362,11 @@ jobs:
       - run: cargo check --target x86_64-unknown-haiku -Z build-std --examples
 
   doc:
+    name: Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
@@ -331,19 +376,21 @@ jobs:
       - run: RUSTDOCFLAGS="-D warnings" cargo doc --all-features
 
   audit:
+    name: cargo-deny
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: EmbarkStudios/cargo-deny-action@v2
+      - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2.1.1
 
   fallback:
+    name: Fallback feature
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
@@ -354,30 +401,12 @@ jobs:
       # Should succeed:
       - run: cargo build --lib --target x86_64-fortanix-unknown-sgx --features fallback
 
-  c:
-    name: Lint and format C
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup Node.js runtime
-        uses: actions/setup-node@v6
-        with:
-          node-version: "lts/*"
-      - name: Install npm
-        run: npm i -f -g npm@8.16.0
-
-      - name: Lint and check formatting with clang-format
-        run: npx github:artichoke/clang-format --check
-
   test-haiku:
+    name: Test Haiku support crate
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-22.04, windows-2022, macos-latest]
+        runs-on: [ubuntu-24.04, windows-2022, macos-latest]
         toolchain:
           - stable
         versions:
@@ -388,22 +417,26 @@ jobs:
       RUST_BACKTRACE: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --target x86_64-fortanix-unknown-sgx
-          rustup default ${{ matrix.toolchain }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --target x86_64-fortanix-unknown-sgx
+          rustup default "$TOOLCHAIN"
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
       - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
+        run: cargo generate-lockfile $VERSIONS
         working-directory: haiku
         env:
+          VERSIONS: ${{ matrix.versions }}
           RUSTC_BOOTSTRAP: 1
       - run: cargo test --all-targets
         working-directory: haiku
 
   check-haiku:
+    name: Check Haiku support crate
     strategy:
       fail-fast: false
       matrix:
@@ -417,17 +450,20 @@ jobs:
       RUST_BACKTRACE: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust
         run: |
-          rustup toolchain install ${{ matrix.toolchain }} --profile minimal --no-self-update --component clippy
-          rustup default ${{ matrix.toolchain }}
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --no-self-update --component clippy
+          rustup default "$TOOLCHAIN"
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
       - name: Update lockfile
-        run: cargo generate-lockfile ${{ matrix.versions }}
+        run: cargo generate-lockfile $VERSIONS
         working-directory: haiku
         env:
+          VERSIONS: ${{ matrix.versions }}
           RUSTC_BOOTSTRAP: 1
       - run: cargo check --all-targets
         working-directory: haiku
@@ -435,10 +471,11 @@ jobs:
         working-directory: haiku
 
   check-all-versions:
-    runs-on: ubuntu-22.04
+    name: Check dependency version ranges
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -448,7 +485,7 @@ jobs:
           rustup default nightly
 
       - name: Install "cargo hack"
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@a4d3f3f761dcd95cce1b72cb61cb6d1963438177 # v2.87.30
         with:
           tool: cargo-hack
 
@@ -458,7 +495,7 @@ jobs:
     name: Generate windows-core bindings with windows-bindgen
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Clean
@@ -469,26 +506,28 @@ jobs:
         run: test -z "$(git status --porcelain)" || (echo "::error::Generated files are different, please regenerate with cargo run --manifest-path=api_gen/Cargo.toml!"; git status; false)
 
   typos:
+    name: Spelling
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: crate-ci/typos@master
+      - uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
 
   devskim:
+    name: DevSkim
     runs-on: ubuntu-latest
     permissions:
-      actions: read
-      contents: read
-      security-events: write
+      actions: read # Let the SARIF upload read workflow run details.
+      contents: read # Check out the repository.
+      security-events: write # Upload DevSkim results to code scanning.
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Run DevSkim scanner
-        uses: microsoft/DevSkim-Action@v1
+        uses: microsoft/DevSkim-Action@4b5047945a44163b94642a1cecc0d93a3f428cc6 # v1.0.16
       - name: Upload DevSkim scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           sarif_file: devskim-results.sarif
