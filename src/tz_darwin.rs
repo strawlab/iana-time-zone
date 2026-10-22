@@ -1,4 +1,4 @@
-use crate::ffi_utils::buffer::{tzname_buf, MAX_LEN};
+use crate::ffi_utils::buffer::{MAX_LEN, tzname_buf};
 
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
     get_timezone().ok_or(crate::GetTimezoneError::OsError)
@@ -110,8 +110,8 @@ mod string_ref {
 
     use core_foundation_sys::base::{Boolean, CFRange};
     use core_foundation_sys::string::{
-        kCFStringEncodingUTF8, CFStringGetBytes, CFStringGetCStringPtr, CFStringGetLength,
-        CFStringRef,
+        CFStringGetBytes, CFStringGetCStringPtr, CFStringGetLength, CFStringRef,
+        kCFStringEncodingUTF8,
     };
 
     pub(crate) struct StringRef<'a, T> {

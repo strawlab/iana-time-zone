@@ -1,11 +1,11 @@
 [package]
 name = "api_gen"
 version = "0.0.0"
-edition = "2021"
+edition = "2024"
 publish = false
 
 [dependencies]
-windows-bindgen = "0.59"
+windows-bindgen = "0.100"
 
 # Dissociate this crate from the root workspace to allow older Rust to build
 # the main crate within the workspace, without observing higher `rust-version`

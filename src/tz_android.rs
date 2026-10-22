@@ -1,27 +1,26 @@
-use std::sync::Once;
+use std::ffi::CStr;
+use std::sync::OnceLock;
 
 use android_system_properties::AndroidSystemProperties;
 
-use crate::ffi_utils::android_timezone_property_name;
+// The system property named 'persist.sys.timezone' contains the name of the
+// current timezone.
+//
+// From https://android.googlesource.com/platform/bionic/+/gingerbread-release/libc/docs/OVERVIEW.TXT#79:
+//
+// > The name of the current timezone is taken from the TZ environment variable,
+// > if defined. Otherwise, the system property named 'persist.sys.timezone' is
+// > checked instead.
+const TIMEZONE_PROPERTY_NAME: &CStr = c"persist.sys.timezone";
 
 pub(crate) fn get_timezone_inner() -> Result<String, crate::GetTimezoneError> {
-    let key = android_timezone_property_name();
-
     get_properties()
-        .and_then(|properties| properties.get_from_cstr(key))
+        .and_then(|properties| properties.get_from_cstr(TIMEZONE_PROPERTY_NAME))
         .ok_or(crate::GetTimezoneError::OsError)
 }
 
 fn get_properties() -> Option<&'static AndroidSystemProperties> {
-    static INITIALIZED: Once = Once::new();
-    static mut PROPERTIES: Option<AndroidSystemProperties> = None;
+    static PROPERTIES: OnceLock<AndroidSystemProperties> = OnceLock::new();
 
-    INITIALIZED.call_once(|| {
-        let properties = AndroidSystemProperties::new();
-        // SAFETY: `INITIALIZED` is synchronizing. The variable is only assigned to once.
-        unsafe { PROPERTIES = Some(properties) };
-    });
-
-    // SAFETY: `INITIALIZED` is synchronizing. The variable is only assigned to once.
-    unsafe { PROPERTIES.as_ref() }
+    Some(PROPERTIES.get_or_init(AndroidSystemProperties::new))
 }
