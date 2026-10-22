@@ -5,7 +5,7 @@ use windows_bindings::Windows::Globalization::Calendar;
 
 impl From<windows_core::Error> for crate::GetTimezoneError {
     fn from(orig: windows_core::Error) -> Self {
-        crate::GetTimezoneError::IoError(std::io::Error::new(std::io::ErrorKind::Other, orig))
+        crate::GetTimezoneError::IoError(std::io::Error::other(orig))
     }
 }
 

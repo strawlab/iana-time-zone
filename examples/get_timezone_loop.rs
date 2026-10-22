@@ -1,7 +1,7 @@
 use std::thread;
 use std::time::Duration;
 
-use iana_time_zone::{get_timezone, GetTimezoneError};
+use iana_time_zone::{GetTimezoneError, get_timezone};
 
 const WAIT: Duration = Duration::from_secs(1);
 

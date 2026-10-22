@@ -12,8 +12,8 @@ license = "MIT OR Apache-2.0"
 keywords = ["IANA", "time"]
 categories = ["date-and-time", "internationalization", "os"]
 readme = "README.md"
-edition = "2021"
-rust-version = "1.62.0"
+edition = "2024"
+rust-version = "1.95.0"
 
 [features]
 # When enabled, the library will succeed to compile for unknown target platforms, and return an `Err(GetTimezoneError::OsError)` at runtime.

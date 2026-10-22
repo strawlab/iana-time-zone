@@ -73,17 +73,18 @@ mod openwrt {
             if let Some(keyword) = next()? {
                 if keyword == "config" {
                     in_system_section = next()? == Some("system") && next()?.is_none();
-                } else if in_system_section && keyword == "option" {
-                    if let Some(key) = next()? {
-                        if key == "zonename" {
-                            if let (Some(zonename), None) = (next()?, next()?) {
-                                return Ok(zonename.to_owned());
-                            }
-                        } else if key == "timezone" {
-                            if let (Some(value), None) = (next()?, next()?) {
-                                timezone = Some(value.to_owned());
-                            }
-                        }
+                } else if in_system_section
+                    && keyword == "option"
+                    && let Some(key) = next()?
+                {
+                    if key == "zonename"
+                        && let (Some(zonename), None) = (next()?, next()?)
+                    {
+                        return Ok(zonename.to_owned());
+                    } else if key == "timezone"
+                        && let (Some(value), None) = (next()?, next()?)
+                    {
+                        timezone = Some(value.to_owned());
                     }
                 }
             }

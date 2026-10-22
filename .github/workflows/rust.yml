@@ -29,17 +29,13 @@ jobs:
       matrix:
         runs-on: [ubuntu-24.04, windows-2022, macos-latest]
         toolchain:
-          - "1.62"
+          - "1.95"
           - stable
           - nightly
         versions:
           - ""
           - -Zminimal-versions
         exclude:
-          # package `regex v1.11.1` cannot be built because it requires rustc
-          # 1.65 or newer, while the currently active rustc version is 1.62.0
-          - toolchain: "1.62"
-            versions: ""
           # Older proc-macro2 crates fail to compile on the latest nightly
           - toolchain: nightly
             versions: -Zminimal-versions
@@ -72,12 +68,9 @@ jobs:
           - ""
           - -Zminimal-versions
         toolchain:
+          - "1.95"
           - stable
           - nightly
-        include:
-          # Without `-Zminimal-versions` a too recent bumpalo version is selected. Newer versions use `edition = "2021"`.
-          - versions: -Zminimal-versions
-          - toolchain: "1.62"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -271,18 +264,13 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - "1.62"
+          - "1.95"
           - stable
         target:
           - x86_64-apple-ios
         versions:
           - ""
           - -Zminimal-versions
-        exclude:
-          # package `regex v1.11.1` cannot be built because it requires rustc
-          # 1.65 or newer, while the currently active rustc version is 1.62.0
-          - toolchain: "1.62"
-            versions: ""
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -313,17 +301,12 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - "1.62"
+          - "1.95"
           - stable
           - nightly
         versions:
           - ""
           - -Zminimal-versions
-        exclude:
-          # package `cc v1.2.17` cannot be built because it requires rustc 1.63
-          # or newer, while the currently active rustc version is 1.62.0
-          - toolchain: "1.62"
-            versions: ""
     runs-on: ubuntu-latest
     env:
       RUSTFLAGS: -D warnings
