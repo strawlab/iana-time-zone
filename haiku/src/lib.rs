@@ -1,7 +1,6 @@
 #![warn(clippy::all)]
 #![warn(clippy::cargo)]
 #![warn(clippy::undocumented_unsafe_blocks)]
-#![allow(unknown_lints)]
 #![warn(missing_copy_implementations)]
 #![warn(missing_debug_implementations)]
 #![warn(missing_docs)]

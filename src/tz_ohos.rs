@@ -8,8 +8,14 @@ use std::ffi::{CStr, c_char};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 #[repr(C)]
-#[allow(non_camel_case_types)]
-#[allow(dead_code)]
+#[expect(
+    non_camel_case_types,
+    reason = "mirrors the OpenHarmony C enum `TimeService_ErrCode`"
+)]
+#[expect(
+    dead_code,
+    reason = "the error variants are only produced by OH_TimeService_GetTimeZone across FFI"
+)]
 enum TimeService_ErrCode {
     TIMESERVICE_ERR_OK = 0,
     TIMESERVICE_ERR_INTERNAL_ERROR = 13000001,

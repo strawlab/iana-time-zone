@@ -1,10 +1,9 @@
-#[allow(
+#[expect(
     dead_code,
     missing_debug_implementations,
-    non_camel_case_types,
     non_snake_case,
-    clippy::all,
-    clippy::undocumented_unsafe_blocks
+    clippy::undocumented_unsafe_blocks,
+    reason = "windows-bindgen generates these bindings from Windows metadata"
 )]
 mod windows_bindings;
 use windows_bindings::Windows::Globalization::Calendar;
