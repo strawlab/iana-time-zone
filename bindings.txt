@@ -1,4 +1,7 @@
 --out src/windows_bindings.rs
 
 --filter
-    Windows.Globalization.Calendar
+    Windows::Globalization::Calendar::GetTimeZone
+    // Calendar's generated factory accessors name these interfaces; empty
+    // member lists define them without projecting any methods.
+    Windows::Globalization::{ICalendarFactory, ICalendarFactory2}::{}

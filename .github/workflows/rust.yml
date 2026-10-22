@@ -482,7 +482,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Clean
-        run: rm -rf src/Windows.rs
+        run: rm -f src/windows_bindings.rs
       - name: Generate
         run: cargo r --manifest-path=api_gen/Cargo.toml
       - name: Diff generated Rust code
